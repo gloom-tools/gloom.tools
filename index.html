@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gloom</title>
+  <meta name="description" content="Security studio for engineers. We consult, we build, we ship.">
+  <meta property="og:title" content="Gloom">
+  <meta property="og:description" content="Security studio for engineers. We consult, we build, we ship.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    :root {
+      --bg: #0A0A0A;
+      --fg: #E8E8E8;
+      --accent: #6EF0DC;
+      --muted: #5A5A5A;
+      --font-sans: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    ::selection {
+      color: var(--bg);
+      background: var(--accent);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overscroll-behavior: none;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      cursor: default;
+      overflow-x: hidden;
+    }
+
+    /* --- NAV --- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: difference;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    /* --- HERO --- */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0 3rem;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 900px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.4s;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.6;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.6s;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      padding: 1rem 2rem;
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    .hero-cta:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .hero-cta .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    .hero-cta:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* --- DIVIDER --- */
+    .divider {
+      width: 100%;
+      padding: 0 3rem;
+    }
+
+    .divider-line {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--muted), transparent);
+    }
+
+    /* --- WHAT WE DO --- */
+    .section {
+      padding: 8rem 3rem;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4rem;
+    }
+
+    .capabilities {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 3rem;
+      max-width: 1200px;
+    }
+
+    .capability {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 2rem;
+    }
+
+    .capability h3 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: var(--fg);
+    }
+
+    .capability p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      padding: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .footer-left {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .footer-right a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-right a:hover {
+      color: var(--accent);
+    }
+
+    /* --- NOISE OVERLAY --- */
+    .noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    /* --- GRID LINES (subtle background) --- */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    /* --- GLOW --- */
+    .glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110, 240, 220, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      transform: translate(-50%, -50%);
+      transition: left 0.5s ease-out, top 0.5s ease-out;
+    }
+
+    /* --- ANIMATIONS --- */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      nav {
+        padding: 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 0 1.5rem;
+      }
+
+      .section {
+        padding: 5rem 1.5rem;
+      }
+
+      .divider {
+        padding: 0 1.5rem;
+      }
+
+      footer {
+        padding: 2rem 1.5rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* --- SCROLLBAR --- */
+    ::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--muted);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="grid-bg"></div>
+  <div class="glow" id="glow"></div>
+
+  <nav>
+    <a href="/" class="logo">Gloom</a>
+    <ul class="nav-links">
+      <li><a href="#work">Studio</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="mailto:hello@gloom.studio">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-label">Security Studio</p>
+    <h1>We build<br>security for<br><em>engineers</em></h1>
+    <p class="hero-sub">
+      A studio that blends consulting and craft. We design, build, and ship security tools that engineers actually want to use.
+    </p>
+    <a href="mailto:hello@gloom.studio" class="hero-cta">
+      Get in touch <span class="arrow">→</span>
+    </a>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <section class="section" id="work">
+    <p class="section-label">What we do</p>
+    <div class="capabilities">
+      <div class="capability">
+        <h3>Consulting</h3>
+        <p>Security architecture, threat modeling, and infrastructure hardening. We embed with your team and solve real problems.</p>
+      </div>
+      <div class="capability">
+        <h3>Tooling</h3>
+        <p>Custom security tools built for developer workflows. Not another dashboard nobody checks. Things that actually ship.</p>
+      </div>
+      <div class="capability">
+        <h3>Engineering</h3>
+        <p>Identity, access, detection, automation. We write the code, build the pipelines, and make security disappear into the stack.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">© 2026 Gloom</div>
+    <div class="footer-right">
+      <a href="https://github.com/camille-gloom">GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    // Subtle mouse-following glow
+    const glow = document.getElementById('glow');
+    document.addEventListener('mousemove', (e) => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+
+    // Intersection observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.capability').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
