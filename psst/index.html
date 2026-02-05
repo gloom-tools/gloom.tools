@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <title>psst — Slack DLP by Gloom</title>
-  <meta name="description" content="Self-hosted Slack DLP that catches leaked secrets before they spread. 22+ detection patterns, friendly alerts, your infra.">
+  <meta name="description" content="Self-hosted Slack DLP that catches leaked secrets before they spread. 40+ regex detection patterns, friendly alerts, your infra. Docker, YAML config, zero vendor lock-in.">
   <meta property="og:title" content="psst — Slack DLP by Gloom">
-  <meta property="og:description" content="Self-hosted Slack DLP that catches leaked secrets before they spread. 22+ detection patterns, friendly alerts, your infra.">
+  <meta property="og:description" content="Self-hosted Slack DLP that catches leaked secrets before they spread. 40+ regex detection patterns, friendly alerts, your infra.">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +25,6 @@
       --bg: #0A0A0A;
       --fg: #E8E8E8;
       --accent: #FFFFFF;
-      --psst-accent: #7C3AED;
       --muted: #5A5A5A;
       --font-sans: 'Space Grotesk', system-ui, sans-serif;
       --font-mono: 'Space Mono', monospace;
@@ -38,7 +37,9 @@
       --slack-link: #1D9BD1;
       --slack-green: #2BAC76;
       --slack-yellow: #E8A820;
+      --slack-red: #E06C75;
       --slack-purple: #7C3AED;
+      --container-max: 1400px;
     }
 
     ::selection {
@@ -60,6 +61,14 @@
       flex-direction: column;
       cursor: default;
       overflow-x: hidden;
+    }
+
+    /* --- CONTAINER --- */
+    .container {
+      width: 100%;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 3rem;
     }
 
     /* --- STATUS BANNER --- */
@@ -137,30 +146,27 @@
     /* --- HERO --- */
     .hero {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 0 3rem;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
       min-height: 100vh;
       padding-top: 6rem;
-      position: relative;
-    }
-
-    .hero {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
       gap: 4rem;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding-left: 3rem;
+      padding-right: 3rem;
     }
 
     .hero-content {
       flex: 1;
       min-width: 0;
+      max-width: 640px;
     }
 
     .hero-mock {
       flex: 1;
-      max-width: 520px;
+      max-width: 560px;
       opacity: 0;
       animation: fadeUp 0.8s ease forwards;
       animation-delay: 1s;
@@ -171,7 +177,7 @@
       font-size: 0.7rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--psst-accent);
+      color: var(--accent);
       margin-bottom: 2rem;
       opacity: 0;
       animation: fadeUp 0.8s ease forwards;
@@ -213,8 +219,17 @@
       animation-delay: 0.6s;
     }
 
-    .hero-cta {
+    .hero-ctas {
       margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    .hero-cta {
       display: inline-flex;
       align-items: center;
       gap: 0.75rem;
@@ -227,9 +242,6 @@
       border: 1px solid var(--accent);
       padding: 1rem 2rem;
       transition: all 0.3s ease;
-      opacity: 0;
-      animation: fadeUp 0.8s ease forwards;
-      animation-delay: 0.8s;
     }
 
     .hero-cta:hover {
@@ -245,9 +257,36 @@
       transform: translateX(4px);
     }
 
+    .hero-docker {
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.9s;
+    }
+
+    .hero-docker-cmd {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      display: inline-block;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-docker-cmd span {
+      color: var(--accent);
+      opacity: 0.4;
+      margin-right: 0.5rem;
+    }
+
     /* --- DIVIDER --- */
     .divider {
       width: 100%;
+      max-width: var(--container-max);
+      margin: 0 auto;
       padding: 0 3rem;
     }
 
@@ -259,7 +298,7 @@
 
     /* --- SECTIONS --- */
     .section {
-      padding: 8rem 3rem;
+      padding: 8rem 0;
     }
 
     .section-label {
@@ -267,7 +306,7 @@
       font-size: 0.7rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--psst-accent);
+      color: var(--accent);
       margin-bottom: 4rem;
     }
 
@@ -275,7 +314,7 @@
       font-size: 1.1rem;
       font-weight: 300;
       color: var(--muted);
-      max-width: 600px;
+      max-width: 640px;
       line-height: 1.7;
       margin-bottom: 4rem;
     }
@@ -285,7 +324,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
-      max-width: 1200px;
     }
 
     .mock-full {
@@ -370,10 +408,11 @@
       color: white;
     }
 
-    .avatar-user {
-      background: #4A9CDB;
-    }
-
+    .avatar-user { background: #4A9CDB; }
+    .avatar-user-green { background: #2BAC76; }
+    .avatar-user-orange { background: #E8912D; }
+    .avatar-user-pink { background: #D94C8A; }
+    .avatar-user-teal { background: #1B8A9E; }
     .avatar-psst {
       background: var(--slack-purple);
       font-size: 13px;
@@ -439,51 +478,6 @@
       letter-spacing: 0.05em;
     }
 
-    .slack-thread-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      margin-top: 6px;
-      margin-left: 48px;
-      border-radius: 6px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    .thread-avatar-stack {
-      display: flex;
-    }
-
-    .thread-avatar-small {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: 700;
-      color: white;
-      margin-left: -4px;
-    }
-
-    .thread-avatar-small:first-child {
-      margin-left: 0;
-    }
-
-    .thread-text {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--slack-link);
-    }
-
-    .thread-time {
-      font-size: 12px;
-      color: var(--slack-muted);
-    }
-
     .slack-thread-reply {
       margin-top: 4px;
       margin-left: 48px;
@@ -535,6 +529,234 @@
       margin-left: -4px;
     }
 
+    /* --- ALERT CHANNEL STYLES --- */
+    .alert-row {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      align-items: flex-start;
+    }
+
+    .alert-row:last-child {
+      border-bottom: none;
+    }
+
+    .alert-severity {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    .alert-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .alert-title {
+      font-size: 14px;
+      color: var(--slack-text);
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .alert-meta {
+      font-size: 12px;
+      color: var(--slack-muted);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .alert-action-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-deleted {
+      background: rgba(224, 108, 117, 0.15);
+      color: #E06C75;
+    }
+
+    .badge-replied {
+      background: rgba(43, 172, 118, 0.15);
+      color: var(--slack-green);
+    }
+
+    .badge-dmd {
+      background: rgba(29, 155, 209, 0.15);
+      color: var(--slack-link);
+    }
+
+    /* --- CONFIG UI STYLES --- */
+    .config-section {
+      margin-bottom: 20px;
+    }
+
+    .config-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slack-text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--slack-border);
+    }
+
+    .config-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--slack-text);
+    }
+
+    .config-row-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .config-count {
+      font-size: 11px;
+      color: var(--slack-muted);
+    }
+
+    .config-toggle {
+      width: 36px;
+      height: 20px;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .config-toggle.on {
+      background: var(--slack-green);
+    }
+
+    .config-toggle.off {
+      background: var(--slack-border);
+    }
+
+    .config-toggle::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      top: 2px;
+      transition: left 0.2s;
+    }
+
+    .config-toggle.on::after {
+      left: 18px;
+    }
+
+    .config-toggle.off::after {
+      left: 2px;
+    }
+
+    .config-value {
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      color: var(--slack-link);
+      background: rgba(29, 155, 209, 0.1);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .config-action-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 16px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .config-severity-label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .config-severity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .config-action-value {
+      color: var(--slack-muted);
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 11px;
+    }
+
+    /* --- SLASH COMMAND STYLES --- */
+    .slash-input {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--slack-border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 13px;
+      color: var(--slack-text);
+      margin: 8px 0 16px;
+    }
+
+    .slash-cmd {
+      color: var(--slack-link);
+      font-weight: 700;
+    }
+
+    .slash-result {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--slack-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 8px;
+    }
+
+    .slash-result-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slack-text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slash-result-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 3px 0;
+    }
+
+    .slash-result-key {
+      color: var(--slack-muted);
+    }
+
+    .slash-result-val {
+      color: var(--slack-text);
+      font-weight: 600;
+    }
+
+    .slash-result-val.critical {
+      color: #E06C75;
+    }
+
     /* Dashboard mock */
     .slack-home-tabs {
       display: flex;
@@ -574,7 +796,7 @@
 
     .dashboard-stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
       margin-bottom: 20px;
     }
@@ -645,7 +867,8 @@
       flex-shrink: 0;
     }
 
-    .severity-high { background: #E06C75; }
+    .severity-critical { background: #E06C75; }
+    .severity-high { background: #E8912D; }
     .severity-medium { background: var(--slack-yellow); }
     .severity-low { background: var(--slack-green); }
 
@@ -679,8 +902,8 @@
     }
 
     .action-dm {
-      background: rgba(124, 58, 237, 0.15);
-      color: var(--slack-purple);
+      background: rgba(29, 155, 209, 0.15);
+      color: var(--slack-link);
     }
 
     .action-deleted {
@@ -691,9 +914,8 @@
     /* --- FEATURES --- */
     .capabilities {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 3rem;
-      max-width: 1200px;
     }
 
     .capability {
@@ -718,12 +940,18 @@
       color: var(--muted);
     }
 
+    .capability code {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--fg);
+      opacity: 0.7;
+    }
+
     /* --- HOW IT WORKS --- */
     .steps {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 3rem;
-      max-width: 1000px;
     }
 
     .step {
@@ -766,6 +994,7 @@
       border-radius: 4px;
       margin-top: 1rem;
       overflow-x: auto;
+      white-space: pre;
     }
 
     /* --- PRICING --- */
@@ -773,7 +1002,6 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 2rem;
-      max-width: 1000px;
     }
 
     .pricing-card {
@@ -788,7 +1016,7 @@
     }
 
     .pricing-card.featured {
-      border-color: var(--psst-accent);
+      border-color: var(--accent);
     }
 
     .pricing-card.featured::before {
@@ -800,8 +1028,8 @@
       font-size: 0.6rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: white;
-      background: var(--psst-accent);
+      color: var(--bg);
+      background: var(--accent);
       padding: 0.3rem 0.7rem;
     }
 
@@ -865,7 +1093,7 @@
 
     /* --- CTA SECTION --- */
     .cta-section {
-      padding: 8rem 3rem;
+      padding: 8rem 0;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -920,7 +1148,7 @@
 
     /* --- FOOTER --- */
     footer {
-      padding: 3rem;
+      padding: 3rem 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -989,7 +1217,7 @@
       width: 600px;
       height: 600px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
       pointer-events: none;
       z-index: -1;
       transform: translate(-50%, -50%);
@@ -1009,6 +1237,30 @@
     }
 
     /* --- RESPONSIVE --- */
+    @media (min-width: 1800px) {
+      .hero-mock {
+        max-width: 620px;
+      }
+
+      .slack-mock {
+        font-size: 16px;
+      }
+
+      .mock-grid {
+        gap: 2.5rem;
+      }
+    }
+
+    @media (min-width: 2200px) {
+      :root {
+        --container-max: 1600px;
+      }
+
+      .hero-mock {
+        max-width: 700px;
+      }
+    }
+
     @media (max-width: 1024px) {
       .hero {
         flex-direction: column;
@@ -1019,6 +1271,7 @@
         max-width: 100%;
         width: 100%;
       }
+
       .mock-grid {
         grid-template-columns: 1fr;
       }
@@ -1038,7 +1291,7 @@
       }
 
       .dashboard-stats {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
@@ -1050,6 +1303,10 @@
 
       .nav-links {
         display: none;
+      }
+
+      .container {
+        padding: 0 1.5rem;
       }
 
       .hero {
@@ -1078,7 +1335,7 @@
       }
 
       .section {
-        padding: 4rem 1.5rem;
+        padding: 4rem 0;
       }
 
       .section-label {
@@ -1118,19 +1375,27 @@
       }
 
       .cta-section {
-        padding: 4rem 1.5rem;
+        padding: 4rem 0;
       }
 
       footer {
-        padding: 2rem 1.5rem;
+        padding: 2rem 0;
         flex-direction: column;
         gap: 1rem;
+      }
+
+      .config-action-grid {
+        font-size: 12px;
       }
     }
 
     @media (max-width: 400px) {
       nav {
         padding: 1rem;
+      }
+
+      .container {
+        padding: 0 1rem;
       }
 
       .hero {
@@ -1148,15 +1413,15 @@
       }
 
       .section {
-        padding: 3rem 1rem;
+        padding: 3rem 0;
       }
 
       .cta-section {
-        padding: 3rem 1rem;
+        padding: 3rem 0;
       }
 
       footer {
-        padding: 1.5rem 1rem;
+        padding: 1.5rem 0;
       }
 
       .slack-mock {
@@ -1209,6 +1474,7 @@
   <nav>
     <a href="/" class="logo">Gloom</a>
     <ul class="nav-links">
+      <li><a href="#in-action">Mockups</a></li>
       <li><a href="#features">Features</a></li>
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="#pricing">Pricing</a></li>
@@ -1223,11 +1489,19 @@
       <h1>psst</h1>
       <p class="hero-tagline">catch secrets before they spread</p>
       <p class="hero-sub">
-        A Slack bot that watches for leaked API keys, tokens, and credentials in real time. Host it yourself or let us run it.
+        A Slack bot that watches every message for leaked API keys, tokens, and credentials in real time. 40+ regex patterns, configurable actions via YAML, deploys in one <code style="font-family: var(--font-mono); font-size: inherit; color: var(--fg); opacity: 0.7;">docker run</code>. Host it yourself or let us run it.
       </p>
-      <a href="mailto:hello@gloom.tools" class="hero-cta">
-        Get early access <span class="arrow">→</span>
-      </a>
+      <div class="hero-ctas">
+        <a href="mailto:hello@gloom.tools" class="hero-cta">
+          Get early access <span class="arrow">→</span>
+        </a>
+        <a href="https://github.com/gloom-tools/psst" class="hero-cta">
+          View on GitHub <span class="arrow">→</span>
+        </a>
+      </div>
+      <div class="hero-docker">
+        <div class="hero-docker-cmd"><span>$</span>docker run -d -e SLACK_BOT_TOKEN=$TOKEN gloom/psst:latest</div>
+      </div>
     </div>
     <div class="hero-mock">
       <div class="slack-mock">
@@ -1244,7 +1518,7 @@
             <div class="slack-avatar avatar-user">M</div>
             <div class="slack-msg-content">
               <div class="slack-msg-header">
-                <span class="slack-username">Marcus Chen</span>
+                <span class="slack-username">marcus.chen</span>
                 <span class="slack-timestamp">11:42 AM</span>
               </div>
               <div class="slack-msg-text">
@@ -1263,7 +1537,7 @@
                   <span class="slack-timestamp">11:42 AM</span>
                 </div>
                 <div class="slack-msg-text">
-                  heads up — this looks like an <strong>AWS access key</strong>. <a class="slack-link-text" href="#">rotate it →</a>
+                  heads up — this looks like an <strong>AWS access key</strong>. I've flagged it and notified the team. <a class="slack-link-text" href="#">rotate it →</a>
                 </div>
               </div>
             </div>
@@ -1277,162 +1551,332 @@
 
   <!-- MOCK SCREENSHOTS -->
   <section class="section" id="in-action">
-    <p class="section-label">See it in action</p>
-    <p class="section-intro">
-      psst fits into Slack like it was always there. Thread replies, DMs, a dashboard — no context switching, no separate portal.
-    </p>
-    <div class="mock-grid">
+    <div class="container">
+      <p class="section-label">See it in action</p>
+      <p class="section-intro">
+        psst lives inside Slack — no separate portal, no context switching. It uses the Slack Events API to process <code style="font-family: var(--font-mono); font-size: inherit; color: var(--fg); opacity: 0.7;">message</code> events in real time, matches against 40+ compiled regex patterns, and takes action in under 200ms. Here's what that looks like.
+      </p>
 
-      <!-- Mock 1: Thread Reply -->
-      <div class="slack-mock">
-        <div class="slack-titlebar">
-          <div class="slack-dots">
-            <div class="slack-dot"></div>
-            <div class="slack-dot"></div>
-            <div class="slack-dot"></div>
+      <div class="mock-grid">
+
+        <!-- Mock 1: Thread Reply — Multiple Secrets -->
+        <div class="slack-mock">
+          <div class="slack-titlebar">
+            <div class="slack-dots">
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+            </div>
+            <span class="slack-channel-name">engineering</span>
           </div>
-          <span class="slack-channel-name">engineering</span>
-        </div>
-        <div class="slack-body">
-          <div class="slack-message">
-            <div class="slack-avatar avatar-user">M</div>
-            <div class="slack-msg-content">
-              <div class="slack-msg-header">
-                <span class="slack-username">Marcus Chen</span>
-                <span class="slack-timestamp">11:42 AM</span>
+          <div class="slack-body">
+            <div class="slack-message">
+              <div class="slack-avatar avatar-user">M</div>
+              <div class="slack-msg-content">
+                <div class="slack-msg-header">
+                  <span class="slack-username">marcus.chen</span>
+                  <span class="slack-timestamp">11:42 AM</span>
+                </div>
+                <div class="slack-msg-text">
+                  hey can someone check the staging deploy? here are the creds:<br>
+                  <code>AKIAIOSFODNN7EXAMPLE</code>
+                </div>
               </div>
-              <div class="slack-msg-text">
-                hey can someone check the staging deploy? here are the creds for the test env<br>
-                <code>AKIAIOSFODNN7EXAMPLE</code>
+            </div>
+            <div class="slack-thread-reply">
+              <div class="slack-message">
+                <div class="slack-avatar avatar-psst">🤫</div>
+                <div class="slack-msg-content">
+                  <div class="slack-msg-header">
+                    <span class="slack-username">psst</span>
+                    <span class="slack-app-badge">app</span>
+                    <span class="slack-timestamp">11:42 AM</span>
+                  </div>
+                  <div class="slack-msg-text">
+                    heads up — that looks like an <strong>AWS access key</strong> (<code>AKIA...</code> pattern). no judgment, just flagging it before it spreads. <a class="slack-link-text" href="#">how to rotate →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slack-message" style="margin-top: 8px;">
+              <div class="slack-avatar avatar-user-green">S</div>
+              <div class="slack-msg-content">
+                <div class="slack-msg-header">
+                  <span class="slack-username">sarah.k</span>
+                  <span class="slack-timestamp">11:47 AM</span>
+                </div>
+                <div class="slack-msg-text">
+                  also the payments integration needs this key<br>
+                  <code>sk_live_•••••••••••••••••7dc</code>
+                </div>
+              </div>
+            </div>
+            <div class="slack-thread-reply">
+              <div class="slack-message">
+                <div class="slack-avatar avatar-psst">🤫</div>
+                <div class="slack-msg-content">
+                  <div class="slack-msg-header">
+                    <span class="slack-username">psst</span>
+                    <span class="slack-app-badge">app</span>
+                    <span class="slack-timestamp">11:47 AM</span>
+                  </div>
+                  <div class="slack-msg-text">
+                    caught another one — that's a <strong>Stripe secret key</strong> (<code>sk_live_</code> prefix). message auto-deleted, DM sent. <a class="slack-link-text" href="#">rotate on Stripe →</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="slack-thread-reply">
+        </div>
+
+        <!-- Mock 2: DM Experience -->
+        <div class="slack-mock">
+          <div class="slack-titlebar">
+            <div class="slack-dots">
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+            </div>
+            <span class="slack-channel-name slack-dm-name">psst</span>
+          </div>
+          <div class="slack-body">
             <div class="slack-message">
               <div class="slack-avatar avatar-psst">🤫</div>
               <div class="slack-msg-content">
                 <div class="slack-msg-header">
                   <span class="slack-username">psst</span>
                   <span class="slack-app-badge">app</span>
-                  <span class="slack-timestamp">11:42 AM</span>
+                  <span class="slack-timestamp">11:47 AM</span>
                 </div>
                 <div class="slack-msg-text">
-                  heads up — this looks like it might contain an <strong>AWS access key</strong>. no judgment, just want to make sure it doesn't spread. <a class="slack-link-text" href="#">here's how to rotate it →</a>
+                  hey sarah — you posted something in <strong>#engineering</strong> that matched our pattern for <strong>Stripe secret key</strong> (severity: critical).<br><br>
+                  the message has been auto-deleted per your workspace policy. no one else needs to know.<br><br>
+                  here's what to do next:<br>
+                  → <a class="slack-link-text" href="#">rotate the key on Stripe Dashboard</a><br>
+                  → check if this key is in any <code>.env</code> files or CI secrets<br>
+                  → consider using <code>vault</code> or a secrets manager going forward<br><br>
+                  <span style="color: var(--slack-muted); font-size: 13px;">🔒 this message is only visible to you · <a class="slack-link-text" href="#" style="font-size: 13px;">view detection details</a></span>
+                </div>
+              </div>
+            </div>
+            <div class="slack-message" style="margin-top: 4px;">
+              <div class="slack-avatar avatar-user-green">S</div>
+              <div class="slack-msg-content">
+                <div class="slack-msg-header">
+                  <span class="slack-username">sarah.k</span>
+                  <span class="slack-timestamp">11:48 AM</span>
+                </div>
+                <div class="slack-msg-text" style="color: var(--slack-muted);">
+                  oh wow, thanks for catching that. rotating now 👍
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Mock 2: DM -->
-      <div class="slack-mock">
-        <div class="slack-titlebar">
-          <div class="slack-dots">
-            <div class="slack-dot"></div>
-            <div class="slack-dot"></div>
-            <div class="slack-dot"></div>
+        <!-- Mock 3: Alert Channel (#security-alerts) — FULL WIDTH -->
+        <div class="slack-mock mock-full">
+          <div class="slack-titlebar">
+            <div class="slack-dots">
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+            </div>
+            <span class="slack-channel-name">security-alerts</span>
           </div>
-          <span class="slack-channel-name slack-dm-name">psst</span>
-        </div>
-        <div class="slack-body">
-          <div class="slack-message">
-            <div class="slack-avatar avatar-psst">🤫</div>
-            <div class="slack-msg-content">
-              <div class="slack-msg-header">
-                <span class="slack-username">psst</span>
-                <span class="slack-app-badge">app</span>
-                <span class="slack-timestamp">2:15 PM</span>
-              </div>
-              <div class="slack-msg-text">
-                psst… you posted something in <strong>#engineering</strong> that looks like a <strong>GitHub personal access token</strong>.<br><br>
-                no judgment — just wanted to give you a heads up before it spreads. you might want to:<br><br>
-                → delete or edit the message<br>
-                → <a class="slack-link-text" href="#">rotate the token on GitHub</a><br>
-                → let your team know if it was already in use<br><br>
-                <span style="color: var(--slack-muted); font-size: 13px;">this message is only visible to you</span>
+          <div class="slack-body" style="padding: 8px 20px;">
+            <div class="alert-row">
+              <div class="alert-severity" style="background: #E06C75;"></div>
+              <div class="slack-avatar avatar-psst" style="width: 28px; height: 28px; font-size: 11px;">🤫</div>
+              <div class="alert-content">
+                <div class="alert-title">AWS access key detected in #engineering</div>
+                <div class="alert-meta">
+                  <span>by <strong style="color: var(--slack-text);">@marcus.chen</strong></span>
+                  <span>·</span>
+                  <span>pattern: <code style="font-family: 'Monaco', monospace; font-size: 11px; color: var(--slack-muted);">AKIA[0-9A-Z]{16}</code></span>
+                  <span>·</span>
+                  <span class="alert-action-badge badge-deleted">auto-deleted</span>
+                  <span class="alert-action-badge badge-dmd">user DM'd</span>
+                  <span style="margin-left: auto; font-size: 11px; color: var(--slack-muted);">11:42 AM</span>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Mock 3: Dashboard -->
-      <div class="slack-mock mock-full">
-        <div class="slack-titlebar">
-          <div class="slack-dots">
-            <div class="slack-dot"></div>
-            <div class="slack-dot"></div>
-            <div class="slack-dot"></div>
-          </div>
-          <span class="slack-channel-name slack-dm-name">psst</span>
-        </div>
-        <div class="slack-home-tabs">
-          <div class="slack-home-tab active">Home</div>
-          <div class="slack-home-tab">Messages</div>
-          <div class="slack-home-tab">About</div>
-        </div>
-        <div class="slack-home-body">
-          <div class="slack-home-title">👋 psst dashboard</div>
-          <div class="slack-home-subtitle">here's what's been happening in your workspace</div>
-          <div class="dashboard-stats">
-            <div class="stat-card">
-              <div class="stat-label">Secrets caught</div>
-              <div class="stat-value">47</div>
-              <div class="stat-change">↑ 12% from last month</div>
+            <div class="alert-row">
+              <div class="alert-severity" style="background: #E06C75;"></div>
+              <div class="slack-avatar avatar-psst" style="width: 28px; height: 28px; font-size: 11px;">🤫</div>
+              <div class="alert-content">
+                <div class="alert-title">GitHub PAT detected in #devops</div>
+                <div class="alert-meta">
+                  <span>by <strong style="color: var(--slack-text);">@sarah.k</strong></span>
+                  <span>·</span>
+                  <span>pattern: <code style="font-family: 'Monaco', monospace; font-size: 11px; color: var(--slack-muted);">ghp_[a-zA-Z0-9]{36}</code></span>
+                  <span>·</span>
+                  <span class="alert-action-badge badge-replied">replied in thread</span>
+                  <span class="alert-action-badge badge-dmd">user DM'd</span>
+                  <span style="margin-left: auto; font-size: 11px; color: var(--slack-muted);">10:18 AM</span>
+                </div>
+              </div>
             </div>
-            <div class="stat-card">
-              <div class="stat-label">This week</div>
-              <div class="stat-value">12</div>
-              <div class="stat-change warn">↑ 3 from last week</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Top category</div>
-              <div class="stat-value" style="font-size: 22px; padding-top: 5px;">API Keys</div>
-              <div class="stat-change">38% of all detections</div>
-            </div>
-          </div>
-          <div class="dashboard-recent">
-            <div class="dashboard-recent-header">Recent detections</div>
-            <div class="dashboard-recent-row">
-              <div class="detection-severity severity-high"></div>
-              <div class="detection-type">AWS Access Key</div>
-              <div class="detection-channel">#engineering</div>
-              <div class="detection-action action-replied">replied</div>
-              <div class="detection-time">2 min ago</div>
-            </div>
-            <div class="dashboard-recent-row">
-              <div class="detection-severity severity-high"></div>
-              <div class="detection-type">GitHub PAT</div>
-              <div class="detection-channel">#devops</div>
-              <div class="detection-action action-dm">DM'd user</div>
-              <div class="detection-time">14 min ago</div>
-            </div>
-            <div class="dashboard-recent-row">
-              <div class="detection-severity severity-medium"></div>
-              <div class="detection-type">Stripe Secret Key</div>
-              <div class="detection-channel">#payments</div>
-              <div class="detection-action action-deleted">auto-deleted</div>
-              <div class="detection-time">1 hr ago</div>
-            </div>
-            <div class="dashboard-recent-row">
-              <div class="detection-severity severity-low"></div>
-              <div class="detection-type">JWT Token</div>
-              <div class="detection-channel">#backend</div>
-              <div class="detection-action action-replied">replied</div>
-              <div class="detection-time">3 hrs ago</div>
-            </div>
-            <div class="dashboard-recent-row">
-              <div class="detection-severity severity-high"></div>
-              <div class="detection-type">Private Key (RSA)</div>
-              <div class="detection-channel">#infrastructure</div>
-              <div class="detection-action action-deleted">auto-deleted</div>
-              <div class="detection-time">yesterday</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
+            <div class="alert-row">
+              <div class="alert-severity" style="background: #E06C75;"></div>
+              <div class="slack-avatar avatar-psst" style="width: 28px; height: 28px; font-size: 11px;">🤫</div>
+              <div class="alert-content">
+                <div class="alert-title">Private key (RSA) detected in #infrastructure</div>
+                <div class="alert-meta">
+                  <span>by <strong style="color: var(--slack-text);">@james.wu</strong></span>
+                  <span>·</span>
+                  <span>pattern: <code style="font-family: 'Monaco', monospace; font-size: 11px; color: var(--slack-muted);">-----BEGIN RSA PRIVATE KEY-----</code></span>
+                  <span>·</span>
+                  <span class="alert-action-badge badge-deleted">auto-deleted</span>
+                  <span class="alert-action-badge badge-dmd">user DM'd</span>
+                  <span style="margin-left: auto; font-size: 11px; color: var(--slack-muted);">9:34 AM</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert-row">
+              <div class="alert-severity" style="background: var(--slack-yellow);"></div>
+              <div class="slack-avatar avatar-psst" style="width: 28px; height: 28px; font-size: 11px;">🤫</div>
+              <div class="alert-content">
+                <div class="alert-title">Slack webhook URL detected in #general</div>
+                <div class="alert-meta">
+                  <span>by <strong style="color: var(--slack-text);">@alex.rivera</strong></span>
+                  <span>·</span>
+                  <span>pattern: <code style="font-family: 'Monaco', monospace; font-size: 11px; color: var(--slack-muted);">hooks.slack.com/services/T[A-Z0-9]+</code></span>
+                  <span>·</span>
+                  <span class="alert-action-badge badge-replied">replied in thread</span>
+                  <span style="margin-left: auto; font-size: 11px; color: var(--slack-muted);">yesterday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mock 4: Configuration / App Home -->
+        <div class="slack-mock">
+          <div class="slack-titlebar">
+            <div class="slack-dots">
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+            </div>
+            <span class="slack-channel-name slack-dm-name">psst</span>
+          </div>
+          <div class="slack-home-tabs">
+            <div class="slack-home-tab active">Home</div>
+            <div class="slack-home-tab">Messages</div>
+            <div class="slack-home-tab">About</div>
+          </div>
+          <div class="slack-home-body" style="padding: 16px 20px;">
+            <div class="config-section">
+              <div class="config-section-title">Detection Patterns</div>
+              <div class="config-row">
+                <div class="config-row-label">☁️ Cloud Keys <span class="config-count">(12 patterns)</span></div>
+                <div class="config-toggle on"></div>
+              </div>
+              <div class="config-row">
+                <div class="config-row-label">🔑 API Tokens <span class="config-count">(15 patterns)</span></div>
+                <div class="config-toggle on"></div>
+              </div>
+              <div class="config-row">
+                <div class="config-row-label">🛡️ PII <span class="config-count">(6 patterns)</span></div>
+                <div class="config-toggle on"></div>
+              </div>
+              <div class="config-row">
+                <div class="config-row-label">🔐 Credentials <span class="config-count">(8 patterns)</span></div>
+                <div class="config-toggle on"></div>
+              </div>
+              <div class="config-row">
+                <div class="config-row-label">📋 Custom <span class="config-count">(3 patterns)</span></div>
+                <div class="config-toggle on"></div>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="config-section-title">Alert Channel</div>
+              <div class="config-row">
+                <div class="config-row-label">Send alerts to</div>
+                <div class="config-value">#security-alerts</div>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="config-section-title">Actions by Severity</div>
+              <div class="config-action-grid">
+                <div class="config-severity-label"><span class="config-severity-dot" style="background: #E06C75;"></span> Critical</div>
+                <div class="config-action-value">auto-delete + DM user + alert channel</div>
+                <div class="config-severity-label"><span class="config-severity-dot" style="background: #E8912D;"></span> High</div>
+                <div class="config-action-value">thread reply + DM user + alert channel</div>
+                <div class="config-severity-label"><span class="config-severity-dot" style="background: var(--slack-yellow);"></span> Medium</div>
+                <div class="config-action-value">thread reply + alert channel</div>
+                <div class="config-severity-label"><span class="config-severity-dot" style="background: var(--slack-green);"></span> Low</div>
+                <div class="config-action-value">log only</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mock 5: /psst slash command -->
+        <div class="slack-mock">
+          <div class="slack-titlebar">
+            <div class="slack-dots">
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+            </div>
+            <span class="slack-channel-name">engineering</span>
+          </div>
+          <div class="slack-body">
+            <div class="slash-input">
+              <span class="slash-cmd">/psst test</span> sk_live_•••••••••••••••••7dc
+            </div>
+
+            <div class="slack-message">
+              <div class="slack-avatar avatar-psst">🤫</div>
+              <div class="slack-msg-content">
+                <div class="slack-msg-header">
+                  <span class="slack-username">psst</span>
+                  <span class="slack-app-badge">app</span>
+                  <span class="slack-timestamp">just now</span>
+                </div>
+                <div class="slack-msg-text" style="margin-bottom: 8px;">
+                  <span style="color: var(--slack-muted); font-size: 13px;">Only visible to you</span>
+                </div>
+                <div class="slash-result">
+                  <div class="slash-result-title">🔍 Detection Result</div>
+                  <div class="slash-result-row">
+                    <span class="slash-result-key">Match</span>
+                    <span class="slash-result-val">Yes — 1 secret found</span>
+                  </div>
+                  <div class="slash-result-row">
+                    <span class="slash-result-key">Type</span>
+                    <span class="slash-result-val">Stripe Secret Key</span>
+                  </div>
+                  <div class="slash-result-row">
+                    <span class="slash-result-key">Severity</span>
+                    <span class="slash-result-val critical">● Critical</span>
+                  </div>
+                  <div class="slash-result-row">
+                    <span class="slash-result-key">Pattern</span>
+                    <span class="slash-result-val" style="font-family: 'Monaco', monospace; font-size: 11px; color: var(--slack-muted);">sk_live_[a-zA-Z0-9]{24,}</span>
+                  </div>
+                  <div class="slash-result-row">
+                    <span class="slash-result-key">Action</span>
+                    <span class="slash-result-val">auto-delete + DM + alert</span>
+                  </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 13px; color: var(--slack-muted);">
+                  💡 Use <code style="font-size: 12px; background: rgba(255,255,255,0.06); padding: 1px 4px; border-radius: 3px;">/psst test &lt;string&gt;</code> to test any text against all active patterns. See <code style="font-size: 12px; background: rgba(255,255,255,0.06); padding: 1px 4px; border-radius: 3px;">/psst help</code> for more commands.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -1440,31 +1884,33 @@
 
   <!-- FEATURES -->
   <section class="section" id="features">
-    <p class="section-label">Features</p>
-    <div class="capabilities">
-      <div class="capability">
-        <h3>Real-time scanning</h3>
-        <p>Every message, every channel. psst watches in real time so secrets get caught in seconds, not days. No batch processing, no delays.</p>
-      </div>
-      <div class="capability">
-        <h3>22+ built-in patterns</h3>
-        <p>AWS, GitHub, Slack, Stripe, OpenAI, Anthropic, Telegram, SSNs, credit cards, private keys, JWTs, and more. Ready out of the box.</p>
-      </div>
-      <div class="capability">
-        <h3>Hosted or self-hosted</h3>
-        <p>Let us run it for you or deploy it in your own infrastructure via Docker. Either way, it works the same. Self-hosted means your data never leaves your network.</p>
-      </div>
-      <div class="capability">
-        <h3>Configurable actions</h3>
-        <p>Thread reply, DM the user, alert a channel, auto-delete, or just log it. Set different actions per severity. Your rules, your workflow.</p>
-      </div>
-      <div class="capability">
-        <h3>Audit trail</h3>
-        <p>Every detection logged to SQLite with full context. Who posted what, when, which channel, what action was taken. Compliance-ready.</p>
-      </div>
-      <div class="capability">
-        <h3>Friendly alerts</h3>
-        <p>No shame, no blame. psst gives people a quiet heads up and helps them fix it. Security culture, not security theater.</p>
+    <div class="container">
+      <p class="section-label">Features</p>
+      <div class="capabilities">
+        <div class="capability">
+          <h3>Real-time event processing</h3>
+          <p>Subscribes to Slack's <code>message.channels</code> and <code>message.groups</code> events via the Events API. Every message processed in-memory, no batch jobs, no polling. Sub-200ms detection latency.</p>
+        </div>
+        <div class="capability">
+          <h3>40+ compiled regex patterns</h3>
+          <p>AWS, GCP, Azure, GitHub, GitLab, Slack, Stripe, OpenAI, Anthropic, Telegram, Twilio, SendGrid, SSNs, credit cards, private keys, JWTs, database URIs, and more. Add custom patterns via <code>patterns.yaml</code> or the GitHub sync.</p>
+        </div>
+        <div class="capability">
+          <h3>Docker-native deployment</h3>
+          <p>Single container, no dependencies. Ships as <code>gloom/psst:latest</code> on Docker Hub. Helm chart available for k8s. SQLite for storage (or Postgres if you prefer). Your data never leaves your infrastructure.</p>
+        </div>
+        <div class="capability">
+          <h3>Configurable action pipeline</h3>
+          <p>Thread reply, DM the user, post to alert channel, auto-delete, or just log. Configure per-severity via <code>config.yaml</code> or the Slack App Home UI. Webhook support for piping events to your SIEM.</p>
+        </div>
+        <div class="capability">
+          <h3>SQLite audit trail</h3>
+          <p>Every detection logged with full context: who, what, when, which channel, pattern matched, action taken. Query it directly, pipe it to your data warehouse, or use the built-in App Home dashboard.</p>
+        </div>
+        <div class="capability">
+          <h3>Friendly, not scary</h3>
+          <p>No shame, no blame. psst gives people a quiet heads up and helps them fix it. Thread replies are visible but gentle. DMs are educational. Security culture, not security theater.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1473,25 +1919,39 @@
 
   <!-- HOW IT WORKS -->
   <section class="section" id="how-it-works">
-    <p class="section-label">How it works</p>
-    <div class="steps">
-      <div class="step">
-        <div class="step-number">01</div>
-        <h3>Install</h3>
-        <p>Create the Slack app from our manifest and run the Docker container. Five minutes, tops.</p>
-        <div class="step-code">docker run -d gloom/psst:latest</div>
-      </div>
-      <div class="step">
-        <div class="step-number">02</div>
-        <h3>Configure</h3>
-        <p>Set your alert channels, tune pattern sensitivity, and decide what actions to take per severity. All via YAML or the Slack UI.</p>
-        <div class="step-code">/psst config --channel #security-alerts</div>
-      </div>
-      <div class="step">
-        <div class="step-number">03</div>
-        <h3>Relax</h3>
-        <p>psst watches for secrets 24/7. When something slips, it handles it quietly. You get the audit trail, your team gets the heads up.</p>
-        <div class="step-code" style="color: var(--slack-green);">✓ monitoring 14 channels</div>
+    <div class="container">
+      <p class="section-label">How it works</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">01</div>
+          <h3>Install</h3>
+          <p>Create the Slack app from our manifest (one click), grab your bot token, and run the container. Five minutes from zero to monitoring.</p>
+          <div class="step-code">docker run -d \
+  -e SLACK_BOT_TOKEN=xoxb-... \
+  -e SLACK_APP_TOKEN=xapp-... \
+  -v psst-data:/data \
+  gloom/psst:latest</div>
+        </div>
+        <div class="step">
+          <div class="step-number">02</div>
+          <h3>Configure</h3>
+          <p>Tune patterns, severities, and actions via <code style="font-family: var(--font-mono); color: var(--fg); opacity: 0.7; font-size: inherit;">config.yaml</code> or the Slack App Home. Set your alert channel, enable auto-delete for critical secrets, adjust sensitivity per category.</p>
+          <div class="step-code"># config.yaml
+alert_channel: "#security-alerts"
+actions:
+  critical: [delete, dm, alert]
+  high: [reply, dm, alert]
+  medium: [reply]
+  low: [log]</div>
+        </div>
+        <div class="step">
+          <div class="step-number">03</div>
+          <h3>Relax</h3>
+          <p>psst watches every channel 24/7. When a secret slips, it handles it quietly. Your security team gets the audit trail, your engineers get a friendly heads up. Use <code style="font-family: var(--font-mono); color: var(--fg); opacity: 0.7; font-size: inherit;">/psst status</code> anytime.</p>
+          <div class="step-code" style="color: var(--slack-green);">✓ monitoring 14 channels
+✓ 47 secrets caught this month
+✓ 0 false positives (7-day avg)</div>
+        </div>
       </div>
     </div>
   </section>
@@ -1500,88 +1960,92 @@
 
   <!-- PRICING -->
   <section class="section" id="pricing">
-    <p class="section-label">Pricing</p>
-    <p class="section-intro">
-      We haven't figured out pricing yet. For now, everything's free. Enjoy it while it lasts.
-    </p>
+    <div class="container">
+      <p class="section-label">Pricing</p>
+      <p class="section-intro">
+        We haven't figured out pricing yet. For now, everything's free. Enjoy it while it lasts.
+      </p>
 
-    <p class="pricing-divider">Hosted — we run it for you</p>
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <div class="pricing-name">Starter</div>
-        <div class="pricing-price">$0 <span>/mo</span></div>
-        <div class="pricing-note">While we figure this out</div>
-        <ul class="pricing-features">
-          <li>1 workspace</li>
-          <li>22 built-in patterns</li>
-          <li>Thread replies + DMs</li>
-          <li>Audit dashboard</li>
-          <li>Community support</li>
-        </ul>
+      <p class="pricing-divider">Hosted — we run it for you</p>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-name">Starter</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <div class="pricing-note">While we figure this out</div>
+          <ul class="pricing-features">
+            <li>1 workspace</li>
+            <li>40+ built-in patterns</li>
+            <li>Thread replies + DMs</li>
+            <li>Audit dashboard</li>
+            <li>Community support</li>
+          </ul>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-name">Pro</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <div class="pricing-note">While we figure this out</div>
+          <ul class="pricing-features">
+            <li>Unlimited workspaces</li>
+            <li>Custom patterns via YAML + GitHub sync</li>
+            <li>Auto-delete capability</li>
+            <li>Backfill scan</li>
+            <li>Webhook events for SIEM integration</li>
+            <li>Priority support</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">Enterprise</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <div class="pricing-note">While we figure this out</div>
+          <ul class="pricing-features">
+            <li>Everything in Pro</li>
+            <li>SSO integration</li>
+            <li>Dedicated support</li>
+            <li>Custom integrations</li>
+            <li>SLA</li>
+          </ul>
+        </div>
       </div>
-      <div class="pricing-card featured">
-        <div class="pricing-name">Pro</div>
-        <div class="pricing-price">$0 <span>/mo</span></div>
-        <div class="pricing-note">While we figure this out</div>
-        <ul class="pricing-features">
-          <li>Unlimited workspaces</li>
-          <li>Custom patterns via GitHub</li>
-          <li>Auto-delete capability</li>
-          <li>Backfill scan</li>
-          <li>Priority support</li>
-        </ul>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-name">Enterprise</div>
-        <div class="pricing-price">$0 <span>/mo</span></div>
-        <div class="pricing-note">While we figure this out</div>
-        <ul class="pricing-features">
-          <li>Everything in Pro</li>
-          <li>SSO integration</li>
-          <li>Dedicated support</li>
-          <li>Custom integrations</li>
-          <li>SLA</li>
-        </ul>
-      </div>
-    </div>
 
-    <p class="pricing-divider">Self-hosted — your infra, your data</p>
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <div class="pricing-name">Team</div>
-        <div class="pricing-price">$0 <span>/mo</span></div>
-        <div class="pricing-note">While we figure this out</div>
-        <ul class="pricing-features">
-          <li>Docker image</li>
-          <li>1 workspace</li>
-          <li>All built-in patterns</li>
-          <li>Full audit trail</li>
-          <li>Community support</li>
-        </ul>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-name">Business</div>
-        <div class="pricing-price">$0 <span>/mo</span></div>
-        <div class="pricing-note">While we figure this out</div>
-        <ul class="pricing-features">
-          <li>Everything in Team</li>
-          <li>Unlimited workspaces</li>
-          <li>Custom patterns + GitHub sync</li>
-          <li>Helm chart</li>
-          <li>Priority support</li>
-        </ul>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-name">Enterprise</div>
-        <div class="pricing-price">$0 <span>/mo</span></div>
-        <div class="pricing-note">While we figure this out</div>
-        <ul class="pricing-features">
-          <li>Everything in Business</li>
-          <li>SSO + SCIM</li>
-          <li>Dedicated support engineer</li>
-          <li>Custom integrations</li>
-          <li>SLA + BAA</li>
-        </ul>
+      <p class="pricing-divider">Self-hosted — your infra, your data</p>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-name">Team</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <div class="pricing-note">While we figure this out</div>
+          <ul class="pricing-features">
+            <li>Docker image (<code style="font-family: var(--font-mono); font-size: 0.8rem;">gloom/psst</code>)</li>
+            <li>1 workspace</li>
+            <li>All built-in patterns</li>
+            <li>Full SQLite audit trail</li>
+            <li>Community support</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">Business</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <div class="pricing-note">While we figure this out</div>
+          <ul class="pricing-features">
+            <li>Everything in Team</li>
+            <li>Unlimited workspaces</li>
+            <li>Custom patterns + GitHub sync</li>
+            <li>Helm chart for k8s</li>
+            <li>Postgres support</li>
+            <li>Priority support</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">Enterprise</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <div class="pricing-note">While we figure this out</div>
+          <ul class="pricing-features">
+            <li>Everything in Business</li>
+            <li>SSO + SCIM</li>
+            <li>Dedicated support engineer</li>
+            <li>Custom integrations + webhooks</li>
+            <li>SLA + BAA</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -1590,20 +2054,24 @@
 
   <!-- CTA -->
   <section class="cta-section">
-    <h2>want to try psst?</h2>
-    <p>We're building in the open. Drop us a line and we'll get you set up when it's ready.</p>
-    <a href="mailto:hello@gloom.tools" class="cta-button">
-      Get early access <span class="arrow">→</span>
-    </a>
+    <div class="container" style="display: flex; flex-direction: column; align-items: center;">
+      <h2>want to try psst?</h2>
+      <p>We're building in the open. Drop us a line or star the repo — we'll get you set up when it's ready.</p>
+      <a href="mailto:hello@gloom.tools" class="cta-button">
+        Get early access <span class="arrow">→</span>
+      </a>
+    </div>
   </section>
 
-  <footer>
-    <div class="footer-left">© 2026 Gloom</div>
-    <div class="footer-right">
-      <a href="/">gloom.tools</a>
-      <a href="https://github.com/gloom-tools">GitHub</a>
-    </div>
-  </footer>
+  <div class="container">
+    <footer>
+      <div class="footer-left">© 2025 Gloom</div>
+      <div class="footer-right">
+        <a href="/">gloom.tools</a>
+        <a href="https://github.com/gloom-tools">GitHub</a>
+      </div>
+    </footer>
+  </div>
 
   <script>
     // Subtle mouse-following glow
