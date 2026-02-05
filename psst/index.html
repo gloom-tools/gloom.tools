@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>psst — Slack DLP by Gloom</title>
+  <meta name="description" content="Self-hosted Slack DLP that catches leaked secrets before they spread. 22+ detection patterns, friendly alerts, your infra.">
+  <meta property="og:title" content="psst — Slack DLP by Gloom">
+  <meta property="og:description" content="Self-hosted Slack DLP that catches leaked secrets before they spread. 22+ detection patterns, friendly alerts, your infra.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    :root {
+      --bg: #0A0A0A;
+      --fg: #E8E8E8;
+      --accent: #FFFFFF;
+      --muted: #5A5A5A;
+      --font-sans: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --slack-bg: #1A1D21;
+      --slack-sidebar: #19171D;
+      --slack-hover: #222529;
+      --slack-border: #2C2D30;
+      --slack-text: #D1D2D3;
+      --slack-muted: #8B8D91;
+      --slack-link: #1D9BD1;
+      --slack-green: #2BAC76;
+      --slack-yellow: #E8A820;
+      --slack-purple: #7C3AED;
+    }
+
+    ::selection {
+      color: var(--bg);
+      background: var(--accent);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overscroll-behavior: none;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      cursor: default;
+      overflow-x: hidden;
+    }
+
+    /* --- STATUS BANNER --- */
+    .status-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      text-align: center;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .status-banner p {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .status-banner span {
+      color: var(--fg);
+      opacity: 0.5;
+    }
+
+    /* --- NAV --- */
+    nav {
+      position: fixed;
+      top: 1.75rem;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: difference;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    /* --- HERO --- */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0 3rem;
+      min-height: 100vh;
+      padding-top: 6rem;
+      position: relative;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    .hero h1 {
+      font-size: clamp(4rem, 12vw, 10rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.4s;
+      font-style: italic;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 300;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      max-width: 600px;
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.6;
+      margin-top: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.6s;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      padding: 1rem 2rem;
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    .hero-cta:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .hero-cta .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    .hero-cta:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* --- DIVIDER --- */
+    .divider {
+      width: 100%;
+      padding: 0 3rem;
+    }
+
+    .divider-line {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--muted), transparent);
+    }
+
+    /* --- SECTIONS --- */
+    .section {
+      padding: 8rem 3rem;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4rem;
+    }
+
+    .section-intro {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 4rem;
+    }
+
+    /* --- SLACK MOCKS --- */
+    .mock-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 1200px;
+    }
+
+    .mock-full {
+      grid-column: 1 / -1;
+    }
+
+    .slack-mock {
+      background: var(--slack-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--slack-border);
+      font-family: 'Lato', 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.46;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .slack-titlebar {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--slack-border);
+      gap: 8px;
+    }
+
+    .slack-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .slack-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--slack-border);
+    }
+
+    .slack-channel-name {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slack-text);
+      margin-left: 4px;
+    }
+
+    .slack-channel-name::before {
+      content: '#';
+      margin-right: 2px;
+      opacity: 0.6;
+    }
+
+    .slack-dm-name::before {
+      content: '';
+      margin-right: 0;
+    }
+
+    .slack-body {
+      padding: 12px 20px 16px;
+    }
+
+    .slack-message {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    .slack-message + .slack-message {
+      padding-top: 4px;
+    }
+
+    .slack-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .avatar-user {
+      background: #4A9CDB;
+    }
+
+    .avatar-psst {
+      background: var(--slack-purple);
+      font-size: 13px;
+    }
+
+    .slack-msg-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .slack-msg-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .slack-username {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--slack-text);
+    }
+
+    .slack-app-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--slack-muted);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 1px 4px;
+      border-radius: 3px;
+      vertical-align: middle;
+    }
+
+    .slack-timestamp {
+      font-size: 12px;
+      color: var(--slack-muted);
+    }
+
+    .slack-msg-text {
+      color: var(--slack-text);
+      word-break: break-all;
+    }
+
+    .slack-msg-text code {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      color: #E06C75;
+    }
+
+    .slack-secret-redacted {
+      background: rgba(224, 108, 117, 0.15);
+      border: 1px solid rgba(224, 108, 117, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      color: #E06C75;
+      letter-spacing: 0.05em;
+    }
+
+    .slack-thread-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      margin-top: 6px;
+      margin-left: 48px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .thread-avatar-stack {
+      display: flex;
+    }
+
+    .thread-avatar-small {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: white;
+      margin-left: -4px;
+    }
+
+    .thread-avatar-small:first-child {
+      margin-left: 0;
+    }
+
+    .thread-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slack-link);
+    }
+
+    .thread-time {
+      font-size: 12px;
+      color: var(--slack-muted);
+    }
+
+    .slack-thread-reply {
+      margin-top: 4px;
+      margin-left: 48px;
+      padding-left: 16px;
+      border-left: 2px solid var(--slack-border);
+    }
+
+    .slack-thread-reply .slack-message {
+      padding: 4px 0;
+    }
+
+    .slack-link-text {
+      color: var(--slack-link);
+      text-decoration: none;
+    }
+
+    /* DM specific */
+    .slack-dm-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--slack-border);
+    }
+
+    .slack-dm-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .slack-dm-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--slack-text);
+    }
+
+    .slack-dm-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--slack-green);
+      margin-left: -4px;
+    }
+
+    /* Dashboard mock */
+    .slack-home-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--slack-border);
+    }
+
+    .slack-home-tab {
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slack-muted);
+    }
+
+    .slack-home-tab.active {
+      color: var(--slack-text);
+      border-bottom: 2px solid var(--slack-text);
+    }
+
+    .slack-home-body {
+      padding: 20px;
+    }
+
+    .slack-home-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--slack-text);
+      margin-bottom: 4px;
+    }
+
+    .slack-home-subtitle {
+      font-size: 14px;
+      color: var(--slack-muted);
+      margin-bottom: 20px;
+    }
+
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--slack-border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--slack-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--slack-text);
+    }
+
+    .stat-change {
+      font-size: 12px;
+      color: var(--slack-green);
+      margin-top: 4px;
+    }
+
+    .stat-change.warn {
+      color: var(--slack-yellow);
+    }
+
+    .dashboard-recent {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--slack-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .dashboard-recent-header {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slack-text);
+      border-bottom: 1px solid var(--slack-border);
+    }
+
+    .dashboard-recent-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 13px;
+    }
+
+    .dashboard-recent-row:last-child {
+      border-bottom: none;
+    }
+
+    .detection-severity {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .severity-high { background: #E06C75; }
+    .severity-medium { background: var(--slack-yellow); }
+    .severity-low { background: var(--slack-green); }
+
+    .detection-type {
+      color: var(--slack-text);
+      font-weight: 600;
+      min-width: 140px;
+    }
+
+    .detection-channel {
+      color: var(--slack-muted);
+      flex: 1;
+    }
+
+    .detection-time {
+      color: var(--slack-muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .detection-action {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .action-replied {
+      background: rgba(43, 172, 118, 0.15);
+      color: var(--slack-green);
+    }
+
+    .action-dm {
+      background: rgba(124, 58, 237, 0.15);
+      color: var(--slack-purple);
+    }
+
+    .action-deleted {
+      background: rgba(224, 108, 117, 0.15);
+      color: #E06C75;
+    }
+
+    /* --- FEATURES --- */
+    .capabilities {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 3rem;
+      max-width: 1200px;
+    }
+
+    .capability {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 2rem;
+    }
+
+    .capability h3 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: var(--fg);
+    }
+
+    .capability p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* --- HOW IT WORKS --- */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      max-width: 1000px;
+    }
+
+    .step {
+      position: relative;
+    }
+
+    .step-number {
+      font-family: var(--font-mono);
+      font-size: 3rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.04);
+      margin-bottom: 1.5rem;
+      line-height: 1;
+    }
+
+    .step h3 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: var(--fg);
+    }
+
+    .step p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .step-code {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      overflow-x: auto;
+    }
+
+    /* --- PRICING --- */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1000px;
+    }
+
+    .pricing-card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: border-color 0.3s ease;
+    }
+
+    .pricing-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .pricing-card.featured {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .pricing-card.featured::before {
+      content: 'Popular';
+      position: absolute;
+      top: -1px;
+      right: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--fg);
+      padding: 0.3rem 0.7rem;
+    }
+
+    .pricing-name {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--fg);
+      margin-bottom: 0.75rem;
+    }
+
+    .pricing-price {
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--fg);
+      margin-bottom: 0.25rem;
+    }
+
+    .pricing-price span {
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .pricing-note {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .pricing-features {
+      list-style: none;
+    }
+
+    .pricing-features li {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--muted);
+      padding: 0.5rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .pricing-features li::before {
+      content: '→ ';
+      color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* --- CTA SECTION --- */
+    .cta-section {
+      padding: 8rem 3rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      text-decoration: none;
+      padding: 1.1rem 2.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background: transparent;
+      color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    .cta-button .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    .cta-button:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      padding: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .footer-left {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-right a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-right a:hover {
+      color: var(--accent);
+    }
+
+    /* --- NOISE OVERLAY --- */
+    .noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    /* --- GRID LINES --- */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    /* --- GLOW --- */
+    .glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      transform: translate(-50%, -50%);
+      transition: left 0.5s ease-out, top 0.5s ease-out;
+    }
+
+    /* --- ANIMATIONS --- */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 1024px) {
+      .mock-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .capabilities {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+
+      .dashboard-stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 1.5rem;
+        top: 1.75rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 0 1.5rem;
+        padding-top: 6rem;
+        min-height: 85vh;
+      }
+
+      .hero h1 {
+        font-size: clamp(3rem, 15vw, 5rem);
+      }
+
+      .hero-tagline {
+        font-size: 1.3rem;
+      }
+
+      .hero-sub {
+        font-size: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .hero-cta {
+        margin-top: 2rem;
+        padding: 0.85rem 1.5rem;
+        font-size: 0.7rem;
+      }
+
+      .section {
+        padding: 4rem 1.5rem;
+      }
+
+      .section-label {
+        margin-bottom: 2.5rem;
+      }
+
+      .capabilities {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .mock-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .detection-channel,
+      .detection-action {
+        display: none;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+
+      .divider {
+        padding: 0 1.5rem;
+      }
+
+      .cta-section {
+        padding: 4rem 1.5rem;
+      }
+
+      footer {
+        padding: 2rem 1.5rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      nav {
+        padding: 1rem;
+      }
+
+      .hero {
+        padding: 0 1rem;
+        padding-top: 5rem;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero-label {
+        font-size: 0.6rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .section {
+        padding: 3rem 1rem;
+      }
+
+      .cta-section {
+        padding: 3rem 1rem;
+      }
+
+      footer {
+        padding: 1.5rem 1rem;
+      }
+
+      .slack-mock {
+        font-size: 13px;
+      }
+
+      .slack-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
+
+      .avatar-psst {
+        font-size: 11px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+      }
+    }
+
+    /* --- SCROLLBAR --- */
+    ::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--muted);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="grid-bg"></div>
+  <div class="glow" id="glow"></div>
+
+  <!-- Status Banner -->
+  <div class="status-banner">
+    <p><span>⚠</span> work in progress — not yet available</p>
+  </div>
+
+  <nav>
+    <a href="/" class="logo">Gloom</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="mailto:hello@gloom.tools">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-label">Slack DLP by Gloom</p>
+    <h1>psst</h1>
+    <p class="hero-tagline">catch secrets before they spread</p>
+    <p class="hero-sub">
+      A self-hosted Slack bot that watches for leaked API keys, tokens, and credentials in real time — then handles it quietly.
+    </p>
+    <a href="mailto:hello@gloom.tools" class="hero-cta">
+      Get early access <span class="arrow">→</span>
+    </a>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- MOCK SCREENSHOTS -->
+  <section class="section" id="in-action">
+    <p class="section-label">See it in action</p>
+    <p class="section-intro">
+      psst fits into Slack like it was always there. Thread replies, DMs, a dashboard — no context switching, no separate portal.
+    </p>
+    <div class="mock-grid">
+
+      <!-- Mock 1: Thread Reply -->
+      <div class="slack-mock">
+        <div class="slack-titlebar">
+          <div class="slack-dots">
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+          </div>
+          <span class="slack-channel-name">engineering</span>
+        </div>
+        <div class="slack-body">
+          <div class="slack-message">
+            <div class="slack-avatar avatar-user">M</div>
+            <div class="slack-msg-content">
+              <div class="slack-msg-header">
+                <span class="slack-username">Marcus Chen</span>
+                <span class="slack-timestamp">11:42 AM</span>
+              </div>
+              <div class="slack-msg-text">
+                hey can someone check the staging deploy? here are the creds for the test env<br>
+                <code>AKIAIOSFODNN7EXAMPLE</code>
+              </div>
+            </div>
+          </div>
+          <div class="slack-thread-reply">
+            <div class="slack-message">
+              <div class="slack-avatar avatar-psst">🤫</div>
+              <div class="slack-msg-content">
+                <div class="slack-msg-header">
+                  <span class="slack-username">psst</span>
+                  <span class="slack-app-badge">app</span>
+                  <span class="slack-timestamp">11:42 AM</span>
+                </div>
+                <div class="slack-msg-text">
+                  heads up — this looks like it might contain an <strong>AWS access key</strong>. no judgment, just want to make sure it doesn't spread. <a class="slack-link-text" href="#">here's how to rotate it →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mock 2: DM -->
+      <div class="slack-mock">
+        <div class="slack-titlebar">
+          <div class="slack-dots">
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+          </div>
+          <span class="slack-channel-name slack-dm-name">psst</span>
+        </div>
+        <div class="slack-body">
+          <div class="slack-message">
+            <div class="slack-avatar avatar-psst">🤫</div>
+            <div class="slack-msg-content">
+              <div class="slack-msg-header">
+                <span class="slack-username">psst</span>
+                <span class="slack-app-badge">app</span>
+                <span class="slack-timestamp">2:15 PM</span>
+              </div>
+              <div class="slack-msg-text">
+                psst… you posted something in <strong>#engineering</strong> that looks like a <strong>GitHub personal access token</strong>.<br><br>
+                no judgment — just wanted to give you a heads up before it spreads. you might want to:<br><br>
+                → delete or edit the message<br>
+                → <a class="slack-link-text" href="#">rotate the token on GitHub</a><br>
+                → let your team know if it was already in use<br><br>
+                <span style="color: var(--slack-muted); font-size: 13px;">this message is only visible to you</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mock 3: Dashboard -->
+      <div class="slack-mock mock-full">
+        <div class="slack-titlebar">
+          <div class="slack-dots">
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+          </div>
+          <span class="slack-channel-name slack-dm-name">psst</span>
+        </div>
+        <div class="slack-home-tabs">
+          <div class="slack-home-tab active">Home</div>
+          <div class="slack-home-tab">Messages</div>
+          <div class="slack-home-tab">About</div>
+        </div>
+        <div class="slack-home-body">
+          <div class="slack-home-title">👋 psst dashboard</div>
+          <div class="slack-home-subtitle">here's what's been happening in your workspace</div>
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <div class="stat-label">Secrets caught</div>
+              <div class="stat-value">47</div>
+              <div class="stat-change">↑ 12% from last month</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">This week</div>
+              <div class="stat-value">12</div>
+              <div class="stat-change warn">↑ 3 from last week</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Top category</div>
+              <div class="stat-value" style="font-size: 22px; padding-top: 5px;">API Keys</div>
+              <div class="stat-change">38% of all detections</div>
+            </div>
+          </div>
+          <div class="dashboard-recent">
+            <div class="dashboard-recent-header">Recent detections</div>
+            <div class="dashboard-recent-row">
+              <div class="detection-severity severity-high"></div>
+              <div class="detection-type">AWS Access Key</div>
+              <div class="detection-channel">#engineering</div>
+              <div class="detection-action action-replied">replied</div>
+              <div class="detection-time">2 min ago</div>
+            </div>
+            <div class="dashboard-recent-row">
+              <div class="detection-severity severity-high"></div>
+              <div class="detection-type">GitHub PAT</div>
+              <div class="detection-channel">#devops</div>
+              <div class="detection-action action-dm">DM'd user</div>
+              <div class="detection-time">14 min ago</div>
+            </div>
+            <div class="dashboard-recent-row">
+              <div class="detection-severity severity-medium"></div>
+              <div class="detection-type">Stripe Secret Key</div>
+              <div class="detection-channel">#payments</div>
+              <div class="detection-action action-deleted">auto-deleted</div>
+              <div class="detection-time">1 hr ago</div>
+            </div>
+            <div class="dashboard-recent-row">
+              <div class="detection-severity severity-low"></div>
+              <div class="detection-type">JWT Token</div>
+              <div class="detection-channel">#backend</div>
+              <div class="detection-action action-replied">replied</div>
+              <div class="detection-time">3 hrs ago</div>
+            </div>
+            <div class="dashboard-recent-row">
+              <div class="detection-severity severity-high"></div>
+              <div class="detection-type">Private Key (RSA)</div>
+              <div class="detection-channel">#infrastructure</div>
+              <div class="detection-action action-deleted">auto-deleted</div>
+              <div class="detection-time">yesterday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <p class="section-label">Features</p>
+    <div class="capabilities">
+      <div class="capability">
+        <h3>Real-time scanning</h3>
+        <p>Every message, every channel. psst watches in real time so secrets get caught in seconds, not days. No batch processing, no delays.</p>
+      </div>
+      <div class="capability">
+        <h3>22+ built-in patterns</h3>
+        <p>AWS, GitHub, Slack, Stripe, OpenAI, Anthropic, Telegram, SSNs, credit cards, private keys, JWTs, and more. Ready out of the box.</p>
+      </div>
+      <div class="capability">
+        <h3>Self-hosted</h3>
+        <p>Runs in your infrastructure via Docker. Your messages never leave your network. No SaaS middleman touching your Slack data.</p>
+      </div>
+      <div class="capability">
+        <h3>Configurable actions</h3>
+        <p>Thread reply, DM the user, alert a channel, auto-delete, or just log it. Set different actions per severity. Your rules, your workflow.</p>
+      </div>
+      <div class="capability">
+        <h3>Audit trail</h3>
+        <p>Every detection logged to SQLite with full context. Who posted what, when, which channel, what action was taken. Compliance-ready.</p>
+      </div>
+      <div class="capability">
+        <h3>Friendly alerts</h3>
+        <p>No shame, no blame. psst gives people a quiet heads up and helps them fix it. Security culture, not security theater.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how-it-works">
+    <p class="section-label">How it works</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">01</div>
+        <h3>Install</h3>
+        <p>Create the Slack app from our manifest and run the Docker container. Five minutes, tops.</p>
+        <div class="step-code">docker run -d gloom/psst:latest</div>
+      </div>
+      <div class="step">
+        <div class="step-number">02</div>
+        <h3>Configure</h3>
+        <p>Set your alert channels, tune pattern sensitivity, and decide what actions to take per severity. All via YAML or the Slack UI.</p>
+        <div class="step-code">/psst config --channel #security-alerts</div>
+      </div>
+      <div class="step">
+        <div class="step-number">03</div>
+        <h3>Relax</h3>
+        <p>psst watches for secrets 24/7. When something slips, it handles it quietly. You get the audit trail, your team gets the heads up.</p>
+        <div class="step-code" style="color: var(--slack-green);">✓ monitoring 14 channels</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+    <p class="section-label">Pricing</p>
+    <p class="section-intro">
+      We haven't figured out pricing yet. For now, everything's free. Enjoy it while it lasts.
+    </p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <div class="pricing-note">While we figure this out</div>
+        <ul class="pricing-features">
+          <li>1 workspace</li>
+          <li>22 built-in patterns</li>
+          <li>Thread replies + DMs</li>
+          <li>SQLite audit trail</li>
+          <li>Community support</li>
+        </ul>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <div class="pricing-note">While we figure this out</div>
+        <ul class="pricing-features">
+          <li>Unlimited workspaces</li>
+          <li>Custom patterns via GitHub</li>
+          <li>Auto-delete capability</li>
+          <li>Backfill scan</li>
+          <li>Priority support</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <div class="pricing-note">While we figure this out</div>
+        <ul class="pricing-features">
+          <li>Everything in Pro</li>
+          <li>SSO integration</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+          <li>SLA</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>want to try psst?</h2>
+    <p>We're building in the open. Drop us a line and we'll get you set up when it's ready.</p>
+    <a href="mailto:hello@gloom.tools" class="cta-button">
+      Get early access <span class="arrow">→</span>
+    </a>
+  </section>
+
+  <footer>
+    <div class="footer-left">© 2026 Gloom</div>
+    <div class="footer-right">
+      <a href="/">gloom.tools</a>
+      <a href="https://github.com/gloom-tools">GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    // Subtle mouse-following glow
+    const glow = document.getElementById('glow');
+    document.addEventListener('mousemove', (e) => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+
+    // Intersection observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.capability, .step, .pricing-card, .slack-mock').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
