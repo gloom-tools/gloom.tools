@@ -3,10 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <title>Gloom</title>
   <meta name="description" content="Security studio for engineers. We consult, we build, we ship.">
@@ -380,6 +376,23 @@
     }
 
     /* --- RESPONSIVE --- */
+
+    /* tablet */
+    @media (max-width: 1024px) {
+      .hero h1 {
+        font-size: clamp(2.5rem, 7vw, 5rem);
+      }
+
+      .capabilities {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .projects {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* mobile landscape / large phone */
     @media (max-width: 768px) {
       nav {
         padding: 1.5rem;
@@ -391,10 +404,39 @@
 
       .hero {
         padding: 0 1.5rem;
+        min-height: 85vh;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 10vw, 3.5rem);
+      }
+
+      .hero-sub {
+        font-size: 1rem;
+        margin-top: 2rem;
+      }
+
+      .hero-cta {
+        margin-top: 2rem;
+        padding: 0.85rem 1.5rem;
+        font-size: 0.7rem;
       }
 
       .section {
-        padding: 5rem 1.5rem;
+        padding: 4rem 1.5rem;
+      }
+
+      .section-label {
+        margin-bottom: 2.5rem;
+      }
+
+      .capabilities {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .projects {
+        grid-template-columns: 1fr;
       }
 
       .divider {
@@ -405,6 +447,40 @@
         padding: 2rem 1.5rem;
         flex-direction: column;
         gap: 1rem;
+      }
+    }
+
+    /* small phone */
+    @media (max-width: 400px) {
+      nav {
+        padding: 1rem;
+      }
+
+      .hero {
+        padding: 0 1rem;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero-label {
+        font-size: 0.6rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .section {
+        padding: 3rem 1rem;
+      }
+
+      footer {
+        padding: 1.5rem 1rem;
+      }
+
+      .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
       }
     }
 
