@@ -220,6 +220,62 @@
       padding-top: 2rem;
     }
 
+    /* --- PROJECTS --- */
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 3rem;
+      max-width: 1200px;
+    }
+
+    .project {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 2rem;
+    }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .project-header h3 {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--fg);
+    }
+
+    .project-status {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.3rem 0.7rem;
+      border-radius: 2px;
+    }
+
+    .project p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .project-wip {
+      margin-top: 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem !important;
+      font-style: italic;
+      color: var(--muted) !important;
+      opacity: 0.6;
+    }
+
     .capability h3 {
       font-family: var(--font-mono);
       font-size: 0.85rem;
@@ -377,8 +433,8 @@
   <nav>
     <a href="/" class="logo">Gloom</a>
     <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#work">Studio</a></li>
-      <li><a href="#work">Work</a></li>
       <li><a href="mailto:hello@gloom.tools">Contact</a></li>
     </ul>
   </nav>
@@ -392,6 +448,22 @@
     <a href="mailto:hello@gloom.tools" class="hero-cta">
       Get in touch <span class="arrow">→</span>
     </a>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <section class="section" id="projects">
+    <p class="section-label">Projects</p>
+    <div class="projects">
+      <div class="project">
+        <div class="project-header">
+          <h3>Haunted House</h3>
+          <span class="project-status">In progress</span>
+        </div>
+        <p>A scanner that finds insecure bots in the wild and catalogs what's wrong with them. Think of it as a public service for people who ship bots without thinking twice.</p>
+        <p class="project-wip">Still sweeping the floors. Check back soon.</p>
+      </div>
+    </div>
   </section>
 
   <div class="divider"><div class="divider-line"></div></div>
@@ -417,7 +489,7 @@
   <footer>
     <div class="footer-left">© 2026 Gloom</div>
     <div class="footer-right">
-      <a href="https://github.com/camille-gloom">GitHub</a>
+      <a href="https://github.com/gloom-tools">GitHub</a>
     </div>
   </footer>
 
@@ -439,7 +511,7 @@
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.capability').forEach(el => {
+    document.querySelectorAll('.capability, .project').forEach(el => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(20px)';
       el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
