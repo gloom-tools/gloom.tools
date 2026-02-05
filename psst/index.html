@@ -1478,6 +1478,7 @@
       <li><a href="#in-action">Mockups</a></li>
       <li><a href="#features">Features</a></li>
       <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#configuration">Config</a></li>
       <li><a href="#pricing">Pricing</a></li>
       <li><a href="mailto:hello@gloom.tools">Contact</a></li>
     </ul>
@@ -1894,7 +1895,7 @@
         </div>
         <div class="capability">
           <h3>40+ compiled regex patterns</h3>
-          <p>AWS, GCP, Azure, GitHub, GitLab, Slack, Stripe, OpenAI, Anthropic, Telegram, Twilio, SendGrid, SSNs, credit cards, private keys, JWTs, database URIs, and more. Add custom patterns via <code>patterns.yaml</code> or the GitHub sync.</p>
+          <p>AWS, GCP, Azure, GitHub, GitLab, Slack, Stripe, OpenAI, Anthropic, Telegram, Twilio, SendGrid, SSNs, credit cards, private keys, JWTs, database URIs, and more. Add custom patterns via GitHub sync or the Slack config modal.</p>
         </div>
         <div class="capability">
           <h3>Docker-native deployment</h3>
@@ -1952,6 +1953,111 @@ actions:
           <div class="step-code" style="color: var(--slack-green);">✓ monitoring 14 channels
 ✓ 47 secrets caught this month
 ✓ 0 false positives (7-day avg)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- CONFIGURATION -->
+  <section class="section" id="configuration">
+    <div class="container">
+      <p class="section-label">Configuration</p>
+      <p class="section-intro">
+        Define your detection patterns wherever works best for your team. Keep them in version control with GitHub sync, or edit directly in Slack for quick changes.
+      </p>
+
+      <div class="mock-grid">
+        <!-- Option 1: GitHub Repo -->
+        <div class="slack-mock" style="background: #0D1117; border-color: #30363d;">
+          <div class="slack-titlebar" style="background: #161B22; border-color: #30363d;">
+            <div class="slack-dots">
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+            </div>
+            <span style="font-family: var(--font-mono); font-size: 12px; color: #8b949e; margin-left: 8px;">acme-corp/security-patterns</span>
+          </div>
+          <div class="slack-body" style="padding: 0;">
+            <div style="padding: 12px 16px; border-bottom: 1px solid #30363d; display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 13px; color: #8b949e;">📁</span>
+              <span style="font-size: 13px; color: #c9d1d9;">patterns.yaml</span>
+              <span style="font-size: 11px; color: #8b949e; margin-left: auto;">synced 2 min ago</span>
+            </div>
+            <pre style="margin: 0; padding: 16px; font-family: 'Monaco', 'Menlo', monospace; font-size: 12px; line-height: 1.6; color: #c9d1d9; overflow-x: auto;"><span style="color: #7ee787;">patterns</span>:
+  <span style="color: #ff7b72;">-</span> <span style="color: #7ee787;">name</span>: <span style="color: #a5d6ff;">Internal API Key</span>
+    <span style="color: #7ee787;">regex</span>: <span style="color: #a5d6ff;">"acme_sk_[a-zA-Z0-9]{32}"</span>
+    <span style="color: #7ee787;">severity</span>: <span style="color: #a5d6ff;">critical</span>
+    <span style="color: #7ee787;">category</span>: <span style="color: #a5d6ff;">tokens</span>
+    <span style="color: #7ee787;">rotation_guide</span>: <span style="color: #a5d6ff;">|</span>
+      <span style="color: #a5d6ff;">Rotate at admin.acme.com/keys</span>
+
+  <span style="color: #ff7b72;">-</span> <span style="color: #7ee787;">name</span>: <span style="color: #a5d6ff;">Database Connection String</span>
+    <span style="color: #7ee787;">regex</span>: <span style="color: #a5d6ff;">"postgres://[^\\s]+"</span>
+    <span style="color: #7ee787;">severity</span>: <span style="color: #a5d6ff;">high</span>
+    <span style="color: #7ee787;">category</span>: <span style="color: #a5d6ff;">credentials</span></pre>
+            <div style="padding: 12px 16px; border-top: 1px solid #30363d; font-size: 12px; color: #8b949e;">
+              <span style="color: #3fb950;">●</span> Auto-sync enabled · Changes deploy in ~30s
+            </div>
+          </div>
+        </div>
+
+        <!-- Option 2: Slack Modal -->
+        <div class="slack-mock">
+          <div class="slack-titlebar">
+            <div class="slack-dots">
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+              <div class="slack-dot"></div>
+            </div>
+            <span style="font-size: 13px; font-weight: 600; color: var(--slack-text); margin-left: 8px;">Add Custom Pattern</span>
+          </div>
+          <div class="slack-body" style="padding: 16px 20px;">
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--slack-text); margin-bottom: 6px;">Name</div>
+              <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--slack-border); border-radius: 4px; padding: 8px 12px; font-size: 14px; color: var(--slack-text);">Internal API Key</div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--slack-text); margin-bottom: 6px;">Regex Pattern</div>
+              <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--slack-border); border-radius: 4px; padding: 8px 12px; font-family: 'Monaco', monospace; font-size: 12px; color: var(--slack-muted);">acme_sk_[a-zA-Z0-9]{32}</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: var(--slack-text); margin-bottom: 6px;">Severity</div>
+                <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--slack-border); border-radius: 4px; padding: 8px 12px; font-size: 14px; color: var(--slack-text); display: flex; justify-content: space-between; align-items: center;">
+                  <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #E06C75;"></span> Critical</span>
+                  <span style="color: var(--slack-muted);">▼</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: var(--slack-text); margin-bottom: 6px;">Category</div>
+                <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--slack-border); border-radius: 4px; padding: 8px 12px; font-size: 14px; color: var(--slack-text); display: flex; justify-content: space-between; align-items: center;">
+                  Tokens
+                  <span style="color: var(--slack-muted);">▼</span>
+                </div>
+              </div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--slack-text); margin-bottom: 6px;">Rotation Guide</div>
+              <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--slack-border); border-radius: 4px; padding: 8px 12px; font-size: 14px; color: var(--slack-muted); min-height: 60px;">Rotate at admin.acme.com/keys. Invalidate the old key immediately.</div>
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+              <div style="background: transparent; border: 1px solid var(--slack-border); border-radius: 4px; padding: 8px 16px; font-size: 14px; font-weight: 600; color: var(--slack-text);">Cancel</div>
+              <div style="background: #007a5a; border-radius: 4px; padding: 8px 16px; font-size: 14px; font-weight: 600; color: white;">Add Pattern</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="capabilities" style="margin-top: 4rem;">
+        <div class="capability">
+          <h3>GitHub Sync</h3>
+          <p>Store patterns in a Git repo. Push changes, psst syncs automatically. Full version history, code review for pattern changes, GitOps-friendly. Point psst at any repo with a <code>patterns.yaml</code> file.</p>
+        </div>
+        <div class="capability">
+          <h3>Slack Modal</h3>
+          <p>Add patterns directly from the psst App Home. No code, no deploys. Great for quick additions or teams that prefer GUI config. Test patterns instantly with <code>/psst test</code>.</p>
         </div>
       </div>
     </div>
