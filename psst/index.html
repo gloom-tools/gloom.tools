@@ -25,6 +25,7 @@
       --bg: #0A0A0A;
       --fg: #E8E8E8;
       --accent: #FFFFFF;
+      --psst-accent: #7C3AED;
       --muted: #5A5A5A;
       --font-sans: 'Space Grotesk', system-ui, sans-serif;
       --font-mono: 'Space Mono', monospace;
@@ -145,12 +146,32 @@
       position: relative;
     }
 
+    .hero {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4rem;
+    }
+
+    .hero-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-mock {
+      flex: 1;
+      max-width: 520px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 1s;
+    }
+
     .hero-label {
       font-family: var(--font-mono);
       font-size: 0.7rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--psst-accent);
       margin-bottom: 2rem;
       opacity: 0;
       animation: fadeUp 0.8s ease forwards;
@@ -246,7 +267,7 @@
       font-size: 0.7rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--psst-accent);
       margin-bottom: 4rem;
     }
 
@@ -767,7 +788,7 @@
     }
 
     .pricing-card.featured {
-      border-color: rgba(255, 255, 255, 0.15);
+      border-color: var(--psst-accent);
     }
 
     .pricing-card.featured::before {
@@ -779,9 +800,19 @@
       font-size: 0.6rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--bg);
-      background: var(--fg);
+      color: white;
+      background: var(--psst-accent);
       padding: 0.3rem 0.7rem;
+    }
+
+    .pricing-divider {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      margin: 3rem 0;
     }
 
     .pricing-name {
@@ -958,7 +989,7 @@
       width: 600px;
       height: 600px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
       pointer-events: none;
       z-index: -1;
       transform: translate(-50%, -50%);
@@ -979,6 +1010,15 @@
 
     /* --- RESPONSIVE --- */
     @media (max-width: 1024px) {
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-mock {
+        max-width: 100%;
+        width: 100%;
+      }
       .mock-grid {
         grid-template-columns: 1fr;
       }
@@ -1178,15 +1218,59 @@
 
   <!-- HERO -->
   <section class="hero">
-    <p class="hero-label">Slack DLP by Gloom</p>
-    <h1>psst</h1>
-    <p class="hero-tagline">catch secrets before they spread</p>
-    <p class="hero-sub">
-      A self-hosted Slack bot that watches for leaked API keys, tokens, and credentials in real time — then handles it quietly.
-    </p>
-    <a href="mailto:hello@gloom.tools" class="hero-cta">
-      Get early access <span class="arrow">→</span>
-    </a>
+    <div class="hero-content">
+      <p class="hero-label">Slack DLP by Gloom</p>
+      <h1>psst</h1>
+      <p class="hero-tagline">catch secrets before they spread</p>
+      <p class="hero-sub">
+        A Slack bot that watches for leaked API keys, tokens, and credentials in real time. Host it yourself or let us run it.
+      </p>
+      <a href="mailto:hello@gloom.tools" class="hero-cta">
+        Get early access <span class="arrow">→</span>
+      </a>
+    </div>
+    <div class="hero-mock">
+      <div class="slack-mock">
+        <div class="slack-titlebar">
+          <div class="slack-dots">
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+            <div class="slack-dot"></div>
+          </div>
+          <span class="slack-channel-name">engineering</span>
+        </div>
+        <div class="slack-body">
+          <div class="slack-message">
+            <div class="slack-avatar avatar-user">M</div>
+            <div class="slack-msg-content">
+              <div class="slack-msg-header">
+                <span class="slack-username">Marcus Chen</span>
+                <span class="slack-timestamp">11:42 AM</span>
+              </div>
+              <div class="slack-msg-text">
+                here are the creds for staging<br>
+                <code>AKIAIOSFODNN7EXAMPLE</code>
+              </div>
+            </div>
+          </div>
+          <div class="slack-thread-reply">
+            <div class="slack-message">
+              <div class="slack-avatar avatar-psst">🤫</div>
+              <div class="slack-msg-content">
+                <div class="slack-msg-header">
+                  <span class="slack-username">psst</span>
+                  <span class="slack-app-badge">app</span>
+                  <span class="slack-timestamp">11:42 AM</span>
+                </div>
+                <div class="slack-msg-text">
+                  heads up — this looks like an <strong>AWS access key</strong>. <a class="slack-link-text" href="#">rotate it →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <div class="divider"><div class="divider-line"></div></div>
@@ -1367,8 +1451,8 @@
         <p>AWS, GitHub, Slack, Stripe, OpenAI, Anthropic, Telegram, SSNs, credit cards, private keys, JWTs, and more. Ready out of the box.</p>
       </div>
       <div class="capability">
-        <h3>Self-hosted</h3>
-        <p>Runs in your infrastructure via Docker. Your messages never leave your network. No SaaS middleman touching your Slack data.</p>
+        <h3>Hosted or self-hosted</h3>
+        <p>Let us run it for you or deploy it in your own infrastructure via Docker. Either way, it works the same. Self-hosted means your data never leaves your network.</p>
       </div>
       <div class="capability">
         <h3>Configurable actions</h3>
@@ -1420,6 +1504,8 @@
     <p class="section-intro">
       We haven't figured out pricing yet. For now, everything's free. Enjoy it while it lasts.
     </p>
+
+    <p class="pricing-divider">Hosted — we run it for you</p>
     <div class="pricing-grid">
       <div class="pricing-card">
         <div class="pricing-name">Starter</div>
@@ -1429,7 +1515,7 @@
           <li>1 workspace</li>
           <li>22 built-in patterns</li>
           <li>Thread replies + DMs</li>
-          <li>SQLite audit trail</li>
+          <li>Audit dashboard</li>
           <li>Community support</li>
         </ul>
       </div>
@@ -1455,6 +1541,46 @@
           <li>Dedicated support</li>
           <li>Custom integrations</li>
           <li>SLA</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="pricing-divider">Self-hosted — your infra, your data</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Team</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <div class="pricing-note">While we figure this out</div>
+        <ul class="pricing-features">
+          <li>Docker image</li>
+          <li>1 workspace</li>
+          <li>All built-in patterns</li>
+          <li>Full audit trail</li>
+          <li>Community support</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Business</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <div class="pricing-note">While we figure this out</div>
+        <ul class="pricing-features">
+          <li>Everything in Team</li>
+          <li>Unlimited workspaces</li>
+          <li>Custom patterns + GitHub sync</li>
+          <li>Helm chart</li>
+          <li>Priority support</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <div class="pricing-note">While we figure this out</div>
+        <ul class="pricing-features">
+          <li>Everything in Business</li>
+          <li>SSO + SCIM</li>
+          <li>Dedicated support engineer</li>
+          <li>Custom integrations</li>
+          <li>SLA + BAA</li>
         </ul>
       </div>
     </div>
