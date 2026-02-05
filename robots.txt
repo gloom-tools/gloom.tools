@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gloom.tools/sitemap.xml
