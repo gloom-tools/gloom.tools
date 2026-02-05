@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /psst/
 Sitemap: https://gloom.tools/sitemap.xml
