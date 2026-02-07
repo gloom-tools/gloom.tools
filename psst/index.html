@@ -1473,7 +1473,7 @@
   </div>
 
   <nav>
-    <a href="/" class="logo">Gloom</a>
+    <a href="/" class="logo">psst</a>
     <ul class="nav-links">
       <li><a href="#in-action">Mockups</a></li>
       <li><a href="#features">Features</a></li>
@@ -1494,8 +1494,8 @@
         A Slack bot that watches every message for leaked API keys, tokens, and credentials in real time. 40+ regex patterns, configurable actions via YAML, deploys in one <code style="font-family: var(--font-mono); font-size: inherit; color: var(--fg); opacity: 0.7;">docker run</code>. Host it yourself or let us run it.
       </p>
       <div class="hero-ctas">
-        <a href="mailto:hello@gloom.tools" class="hero-cta">
-          Get early access <span class="arrow">→</span>
+        <a href="mailto:hello@gloom.tools?subject=psst%20Waitlist&body=Hey%2C%20I%27d%20like%20to%20try%20psst%20when%20it%27s%20ready.%0A%0AName%3A%20%0ACompany%3A%20%0ASlack%20workspace%20size%3A%20%0A%0AAnything%20else%3A%20" class="hero-cta">
+          Join waitlist <span class="arrow">→</span>
         </a>
         <a href="https://github.com/gloom-tools/psst" class="hero-cta">
           View on GitHub <span class="arrow">→</span>
@@ -2069,90 +2069,23 @@ actions:
   <section class="section" id="pricing">
     <div class="container">
       <p class="section-label">Pricing</p>
-      <p class="section-intro">
-        We haven't figured out pricing yet. For now, everything's free. Enjoy it while it lasts.
-      </p>
-
-      <p class="pricing-divider">Hosted — we run it for you</p>
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <div class="pricing-name">Starter</div>
+      <div style="max-width: 500px;">
+        <div class="pricing-card featured" style="text-align: center;">
+          <div class="pricing-name">Beta</div>
           <div class="pricing-price">$0 <span>/mo</span></div>
-          <div class="pricing-note">While we figure this out</div>
-          <ul class="pricing-features">
-            <li>1 workspace</li>
-            <li>40+ built-in patterns</li>
-            <li>Thread replies + DMs</li>
+          <div class="pricing-note">Free while we're building</div>
+          <ul class="pricing-features" style="text-align: left;">
+            <li>Full feature access</li>
+            <li>40+ built-in patterns + custom rules</li>
+            <li>All actions: reply, DM, delete, alert</li>
             <li>Audit dashboard</li>
-            <li>Community support</li>
+            <li>Self-host or we host it for you</li>
+            <li>Direct access to the team</li>
           </ul>
         </div>
-        <div class="pricing-card featured">
-          <div class="pricing-name">Pro</div>
-          <div class="pricing-price">$0 <span>/mo</span></div>
-          <div class="pricing-note">While we figure this out</div>
-          <ul class="pricing-features">
-            <li>Unlimited workspaces</li>
-            <li>Custom patterns via YAML + GitHub sync</li>
-            <li>Auto-delete capability</li>
-            <li>Backfill scan</li>
-            <li>Webhook events for SIEM integration</li>
-            <li>Priority support</li>
-          </ul>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-name">Enterprise</div>
-          <div class="pricing-price">$0 <span>/mo</span></div>
-          <div class="pricing-note">While we figure this out</div>
-          <ul class="pricing-features">
-            <li>Everything in Pro</li>
-            <li>SSO integration</li>
-            <li>Dedicated support</li>
-            <li>Custom integrations</li>
-            <li>SLA</li>
-          </ul>
-        </div>
-      </div>
-
-      <p class="pricing-divider">Self-hosted — your infra, your data</p>
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <div class="pricing-name">Team</div>
-          <div class="pricing-price">$0 <span>/mo</span></div>
-          <div class="pricing-note">While we figure this out</div>
-          <ul class="pricing-features">
-            <li>Docker image (<code style="font-family: var(--font-mono); font-size: 0.8rem;">gloom/psst</code>)</li>
-            <li>1 workspace</li>
-            <li>All built-in patterns</li>
-            <li>Full SQLite audit trail</li>
-            <li>Community support</li>
-          </ul>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-name">Business</div>
-          <div class="pricing-price">$0 <span>/mo</span></div>
-          <div class="pricing-note">While we figure this out</div>
-          <ul class="pricing-features">
-            <li>Everything in Team</li>
-            <li>Unlimited workspaces</li>
-            <li>Custom patterns + GitHub sync</li>
-            <li>Helm chart for k8s</li>
-            <li>Postgres support</li>
-            <li>Priority support</li>
-          </ul>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-name">Enterprise</div>
-          <div class="pricing-price">$0 <span>/mo</span></div>
-          <div class="pricing-note">While we figure this out</div>
-          <ul class="pricing-features">
-            <li>Everything in Business</li>
-            <li>SSO + SCIM</li>
-            <li>Dedicated support engineer</li>
-            <li>Custom integrations + webhooks</li>
-            <li>SLA + BAA</li>
-          </ul>
-        </div>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1.5rem; line-height: 1.6;">
+          We'll figure out real pricing later. Right now we just want feedback from security teams who deal with this problem. If that's you, get in touch.
+        </p>
       </div>
     </div>
   </section>
@@ -2162,17 +2095,17 @@ actions:
   <!-- CTA -->
   <section class="cta-section">
     <div class="container" style="display: flex; flex-direction: column; align-items: center;">
-      <h2>want to try psst?</h2>
-      <p>We're building in the open. Drop us a line or star the repo — we'll get you set up when it's ready.</p>
-      <a href="mailto:hello@gloom.tools" class="cta-button">
-        Get early access <span class="arrow">→</span>
+      <h2>join the waitlist</h2>
+      <p>We're looking for security teams to try psst early. Drop your info and we'll reach out when it's ready.</p>
+      <a href="mailto:hello@gloom.tools?subject=psst%20Waitlist&body=Hey%2C%20I%27d%20like%20to%20try%20psst%20when%20it%27s%20ready.%0A%0AName%3A%20%0ACompany%3A%20%0ASlack%20workspace%20size%3A%20%0A%0AAnything%20else%3A%20" class="cta-button">
+        Join waitlist <span class="arrow">→</span>
       </a>
     </div>
   </section>
 
   <div class="container">
     <footer>
-      <div class="footer-left">© 2025 Gloom</div>
+      <div class="footer-left">© 2026 Gloom</div>
       <div class="footer-right">
         <a href="/">gloom.tools</a>
         <a href="https://github.com/gloom-tools">GitHub</a>
