@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Privacy Policy — Gloom</title>
+  <meta name="description" content="How Gloom handles your data. Short version: we collect very little and don't sell anything.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0A0A0A;
+      --fg: #E8E8E8;
+      --muted: #5A5A5A;
+      --font-sans: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    nav {
+      padding: 1rem 0 3rem;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+
+    .updated {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .tldr {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+      border-radius: 4px;
+    }
+
+    .tldr-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .tldr p {
+      color: var(--fg);
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg);
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    h2:first-of-type {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    strong {
+      color: var(--fg);
+      font-weight: 400;
+    }
+
+    ul {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    a {
+      color: var(--fg);
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <a href="/" class="logo">Gloom</a>
+    </nav>
+
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: February 2026</p>
+
+    <div class="tldr">
+      <p class="tldr-label">TL;DR</p>
+      <p>We collect very little. We don't sell anything. Most of our tools run locally on your machine and we never see your data.</p>
+    </div>
+
+    <h2>Who we are</h2>
+    <p>
+      Gloom builds security tools for engineers. This policy covers gloom.tools and any products we offer. When we say "we," "us," or "Gloom," we mean the company behind this. When we say "you," we mean you, the person using our stuff.
+    </p>
+
+    <h2>What we collect</h2>
+    <p>
+      <strong>When you visit our website:</strong> Basic analytics stuff — what pages you visit, what country you're in, what browser you use. We use privacy-respecting analytics (no Google Analytics). We don't track you across the internet.
+    </p>
+    <p>
+      <strong>When you join a waitlist:</strong> Your email and whatever info you put in the form. We use this to contact you when products are ready. That's it.
+    </p>
+    <p>
+      <strong>When you use psst (hosted):</strong> We process Slack messages to detect secrets. The messages flow through our systems but we don't store message content. We log detection events (what pattern matched, what channel, what user) for the audit trail your admin can see. We don't read your messages for any other purpose.
+    </p>
+    <p>
+      <strong>When you use windowsill:</strong> Nothing. It runs on your machine. Your data stays on your machine. We don't see it, we don't want it.
+    </p>
+    <p>
+      <strong>When you pay us:</strong> Payment processing goes through Stripe. They handle your card info. We see your name, email, and that you paid. We don't store credit card numbers.
+    </p>
+
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We don't sell your data. Ever. To anyone.</li>
+      <li>We don't do advertising or ad tracking.</li>
+      <li>We don't share data with third parties except what's needed to run the service (like Stripe for payments).</li>
+      <li>We don't train AI on your data.</li>
+      <li>We don't look at your stuff unless you ask us to (like for support).</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>
+      We use minimal cookies. Session stuff to keep you logged in. Maybe analytics cookies if we're measuring something. No tracking cookies. No third-party ad cookies. You can block them all and our sites will still work.
+    </p>
+
+    <h2>Where data lives</h2>
+    <p>
+      Our infrastructure is in the United States. If you're in the EU or elsewhere with data residency concerns, know that your data may be processed in the US. For locally-running tools like windowsill, your data stays wherever your machine is.
+    </p>
+
+    <h2>Data retention</h2>
+    <p>
+      We keep data as long as it's useful. Waitlist emails until you unsubscribe or we launch and you're no longer interested. Audit logs for as long as your organization wants them. If you want us to delete your data, email us and we will.
+    </p>
+
+    <h2>Security</h2>
+    <p>
+      We use encryption in transit (HTTPS everywhere). We use encryption at rest where it matters. We follow security best practices because we're literally a security company and it would be embarrassing not to. If you find a vulnerability, email security@gloom.tools and we'll fix it fast.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      You can ask us what data we have about you. You can ask us to delete it. You can ask us to export it. You can unsubscribe from emails anytime. Just email hello@gloom.tools and we'll handle it. We're not going to make you jump through hoops.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      If we change this policy in any meaningful way, we'll let you know. We won't just quietly update it and hope you don't notice. The date at the top tells you when it was last updated.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions? Concerns? Just want to chat? Email us at <a href="mailto:hello@gloom.tools">hello@gloom.tools</a>.
+    </p>
+
+    <footer>
+      <a href="/">← Back to Gloom</a>
+    </footer>
+  </div>
+</body>
+</html>
