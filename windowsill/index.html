@@ -28,6 +28,13 @@
       --muted: #5A5A5A;
       --font-sans: 'Space Grotesk', system-ui, sans-serif;
       --font-mono: 'Space Mono', monospace;
+      --green: #2BAC76;
+      --yellow: #E8A820;
+      --red: #E06C75;
+      --blue: #61AFEF;
+      --purple: #C678DD;
+      --tui-bg: #1a1b26;
+      --tui-border: #3b4261;
     }
 
     ::selection {
@@ -40,17 +47,12 @@
       color: var(--fg);
       font-family: var(--font-sans);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 0 2rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
     }
 
     /* --- NAV --- */
@@ -91,13 +93,10 @@
       color: var(--accent);
     }
 
-    /* --- MAIN --- */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 4rem 0;
+    /* --- HERO --- */
+    .hero {
+      padding: 6rem 0 4rem;
+      text-align: center;
     }
 
     .product-label {
@@ -122,66 +121,12 @@
       font-weight: 300;
       color: var(--muted);
       margin-bottom: 2rem;
-      line-height: 1.5;
     }
 
-    .description {
-      font-size: 1rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 3rem;
-      max-width: 500px;
-    }
-
-    .features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 3rem;
-    }
-
-    .feature {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 0.5rem 1rem;
-    }
-
-    /* --- CLI PREVIEW --- */
-    .cli-preview {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 3rem;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      line-height: 1.8;
-      color: var(--muted);
-      overflow-x: auto;
-    }
-
-    .cli-preview .prompt {
-      color: var(--accent);
-      opacity: 0.5;
-    }
-
-    .cli-preview .cmd {
-      color: var(--fg);
-    }
-
-    .cli-preview .comment {
-      opacity: 0.4;
-    }
-
-    /* --- CTA --- */
-    .cta {
+    .hero-cta {
       display: flex;
       gap: 1rem;
+      justify-content: center;
       flex-wrap: wrap;
     }
 
@@ -216,23 +161,290 @@
       color: var(--accent);
     }
 
-    /* --- STATUS --- */
-    .status {
-      margin-top: 3rem;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
+    /* --- SECTION --- */
+    .section {
+      padding: 4rem 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
 
-    .status span {
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .section-intro {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    /* --- TUI MOCKUP --- */
+    .tui-container {
+      margin: 2rem 0;
+    }
+
+    .tui-mock {
+      background: var(--tui-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.4;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .tui-titlebar {
+      background: rgba(255,255,255,0.05);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--tui-border);
+    }
+
+    .tui-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tui-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--tui-border);
+    }
+
+    .tui-title {
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    .tui-body {
+      padding: 12px;
+      color: #a9b1d6;
+    }
+
+    .tui-panel {
+      border: 1px solid var(--tui-border);
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .tui-panel:last-child {
+      margin-bottom: 0;
+    }
+
+    .tui-panel-header {
+      background: rgba(255,255,255,0.03);
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--tui-border);
+      color: var(--fg);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .tui-panel-body {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    .tui-row {
+      display: flex;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .tui-row:last-child {
+      border-bottom: none;
+    }
+
+    .tui-col {
+      flex: 1;
+    }
+
+    .tui-col-pid { width: 50px; flex: none; color: var(--muted); }
+    .tui-col-process { width: 120px; flex: none; color: var(--blue); }
+    .tui-col-domain { flex: 2; color: #a9b1d6; }
+    .tui-col-port { width: 50px; flex: none; color: var(--muted); }
+    .tui-col-age { width: 70px; flex: none; color: var(--muted); text-align: right; }
+    .tui-col-status { width: 80px; flex: none; text-align: right; }
+
+    .tui-new { color: var(--yellow); }
+    .tui-warn { color: var(--red); }
+    .tui-ok { color: var(--green); }
+
+    .tui-ssh-host { color: var(--purple); }
+    .tui-ssh-time { color: var(--muted); }
+
+    .tui-listener-port { color: var(--green); }
+    .tui-listener-process { color: var(--blue); }
+
+    .tui-footer {
+      background: rgba(255,255,255,0.03);
+      padding: 8px 12px;
+      border-top: 1px solid var(--tui-border);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .tui-key {
+      background: rgba(255,255,255,0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-right: 4px;
+      color: var(--fg);
+    }
+
+    /* --- INTERFACES --- */
+    .interfaces {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .interface {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 1.5rem;
+    }
+
+    .interface h3 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .interface p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* --- CLI PREVIEW --- */
+    .cli-preview {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--muted);
+      overflow-x: auto;
+      margin-top: 2rem;
+    }
+
+    .cli-preview .prompt {
+      color: var(--accent);
       opacity: 0.5;
+    }
+
+    .cli-preview .cmd {
+      color: var(--fg);
+    }
+
+    .cli-preview .flag {
+      color: var(--blue);
+    }
+
+    .cli-preview .comment {
+      opacity: 0.4;
+    }
+
+    /* --- FEATURES --- */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .feature-card {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* --- MENU BAR --- */
+    .menubar-demo {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .menubar-mock {
+      background: #2d2d2d;
+      border-radius: 6px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .menubar-icon {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .menubar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .menubar-dot.green { background: var(--green); }
+    .menubar-dot.yellow { background: var(--yellow); }
+    .menubar-dot.red { background: var(--red); }
+
+    .menubar-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .menubar-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     /* --- FOOTER --- */
     footer {
-      padding: 2rem 0;
+      padding: 3rem 0;
       border-top: 1px solid rgba(255,255,255,0.06);
       display: flex;
       justify-content: space-between;
@@ -288,6 +500,41 @@
       background-size: 80px 80px;
     }
 
+    .status-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.4rem 0.8rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .interfaces {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tui-mock {
+        font-size: 10px;
+      }
+
+      .tui-col-pid, .tui-col-port, .tui-col-age {
+        display: none;
+      }
+
+      .menubar-demo {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
     @media (max-width: 600px) {
       nav {
         flex-direction: column;
@@ -295,20 +542,8 @@
         align-items: flex-start;
       }
 
-      h1 {
-        font-size: 2.5rem;
-      }
-
-      .features {
+      .hero-cta {
         flex-direction: column;
-      }
-
-      .cta {
-        flex-direction: column;
-      }
-
-      .cta-button {
-        text-align: center;
       }
 
       footer {
@@ -328,40 +563,17 @@
       <a href="/" class="logo">Gloom</a>
       <ul class="nav-links">
         <li><a href="/">Home</a></li>
-        <li><a href="https://github.com/gloom-tools">GitHub</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="https://github.com/gloom-tools/windowsill">GitHub</a></li>
       </ul>
     </nav>
 
-    <main class="main">
+    <!-- HERO -->
+    <section class="hero">
       <p class="product-label">Local network observability</p>
       <h1>windowsill</h1>
       <p class="tagline">Know what your machine is talking to.</p>
-      
-      <p class="description">
-        A daemon that watches your network connections, SSH sessions, git activity, and listening ports. See what's crossing the threshold. Detect when something changes. All local, all yours.
-      </p>
-
-      <div class="features">
-        <span class="feature">Outbound connections</span>
-        <span class="feature">SSH sessions</span>
-        <span class="feature">Git activity</span>
-        <span class="feature">Listening ports</span>
-        <span class="feature">Baseline drift</span>
-      </div>
-
-      <div class="cli-preview">
-        <span class="prompt">$</span> <span class="cmd">sill</span><br>
-        <br>
-        <span class="comment"># live view of network activity</span><br>
-        <span class="comment"># connections, ssh, git, listeners</span><br>
-        <span class="comment"># ⚠️ flags new domains, new ports</span><br>
-        <br>
-        <span class="prompt">$</span> <span class="cmd">sill connections --last 1h</span><br>
-        <span class="prompt">$</span> <span class="cmd">sill ssh</span><br>
-        <span class="prompt">$</span> <span class="cmd">sill baseline</span>
-      </div>
-
-      <div class="cta">
+      <div class="hero-cta">
         <a href="mailto:hello@gloom.tools?subject=windowsill%20Waitlist&body=Hey%2C%20I%27d%20like%20to%20try%20windowsill%20when%20it%27s%20ready.%0A%0AName%3A%20%0AWhat%20I%27d%20use%20it%20for%3A%20" class="cta-button primary">
           Join waitlist →
         </a>
@@ -369,11 +581,229 @@
           GitHub →
         </a>
       </div>
+      <div class="status-badge">⚠ Building in public</div>
+    </section>
 
-      <p class="status">
-        <span>⚠</span> Building in public — not ready yet
+    <!-- TUI PREVIEW -->
+    <section class="section">
+      <p class="section-label">The interface</p>
+      <p class="section-intro">
+        A terminal dashboard that shows everything crossing the threshold. Live updates. Keyboard navigation. Anomalies flagged automatically.
       </p>
-    </main>
+
+      <div class="tui-container">
+        <div class="tui-mock">
+          <div class="tui-titlebar">
+            <div class="tui-dots">
+              <div class="tui-dot"></div>
+              <div class="tui-dot"></div>
+              <div class="tui-dot"></div>
+            </div>
+            <span class="tui-title">sill — windowsill v0.1.0</span>
+          </div>
+          <div class="tui-body">
+            <!-- Connections Panel -->
+            <div class="tui-panel">
+              <div class="tui-panel-header">
+                <span>Connections</span>
+                <span style="color: var(--muted);">47 active</span>
+              </div>
+              <div class="tui-panel-body">
+                <div class="tui-row" style="color: var(--muted); font-size: 11px; border-bottom: 1px solid var(--tui-border); padding-bottom: 6px; margin-bottom: 4px;">
+                  <span class="tui-col-pid">PID</span>
+                  <span class="tui-col-process">PROCESS</span>
+                  <span class="tui-col-domain">DOMAIN</span>
+                  <span class="tui-col-port">PORT</span>
+                  <span class="tui-col-age">AGE</span>
+                  <span class="tui-col-status"></span>
+                </div>
+                <div class="tui-row">
+                  <span class="tui-col-pid">1842</span>
+                  <span class="tui-col-process">Slack</span>
+                  <span class="tui-col-domain">wss.slack.com</span>
+                  <span class="tui-col-port">443</span>
+                  <span class="tui-col-age">3m</span>
+                  <span class="tui-col-status"></span>
+                </div>
+                <div class="tui-row">
+                  <span class="tui-col-pid">2901</span>
+                  <span class="tui-col-process">node</span>
+                  <span class="tui-col-domain">api.stripe.com</span>
+                  <span class="tui-col-port">443</span>
+                  <span class="tui-col-age">30s</span>
+                  <span class="tui-col-status"></span>
+                </div>
+                <div class="tui-row">
+                  <span class="tui-col-pid">3102</span>
+                  <span class="tui-col-process">chrome</span>
+                  <span class="tui-col-domain">analytics.tiktok.com</span>
+                  <span class="tui-col-port">443</span>
+                  <span class="tui-col-age">12s</span>
+                  <span class="tui-col-status tui-new">NEW</span>
+                </div>
+                <div class="tui-row">
+                  <span class="tui-col-pid">4821</span>
+                  <span class="tui-col-process">curl</span>
+                  <span class="tui-col-domain">sketchy-domain.ru</span>
+                  <span class="tui-col-port">443</span>
+                  <span class="tui-col-age">2s</span>
+                  <span class="tui-col-status tui-warn">⚠ NEW</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- SSH Panel -->
+            <div class="tui-panel">
+              <div class="tui-panel-header">
+                <span>SSH Sessions</span>
+                <span style="color: var(--muted);">2 active</span>
+              </div>
+              <div class="tui-panel-body">
+                <div class="tui-row">
+                  <span class="tui-ssh-host">prod-db-1.aws.internal</span>
+                  <span class="tui-ssh-time" style="margin-left: auto;">connected 14m</span>
+                </div>
+                <div class="tui-row">
+                  <span class="tui-ssh-host">staging-api.render.com</span>
+                  <span class="tui-ssh-time" style="margin-left: auto;">connected 3m</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Listeners Panel -->
+            <div class="tui-panel">
+              <div class="tui-panel-header">
+                <span>Listeners</span>
+                <span style="color: var(--muted);">4 open</span>
+              </div>
+              <div class="tui-panel-body">
+                <div class="tui-row">
+                  <span class="tui-listener-port">:3000</span>
+                  <span class="tui-listener-process" style="margin-left: 12px;">node</span>
+                  <span style="margin-left: auto; color: var(--muted);">dev server</span>
+                </div>
+                <div class="tui-row">
+                  <span class="tui-listener-port">:5432</span>
+                  <span class="tui-listener-process" style="margin-left: 12px;">postgres</span>
+                  <span style="margin-left: auto; color: var(--muted);">localhost only</span>
+                </div>
+                <div class="tui-row">
+                  <span class="tui-listener-port">:8080</span>
+                  <span class="tui-listener-process" style="margin-left: 12px;">java</span>
+                  <span style="margin-left: auto;" class="tui-new">NEW ⚠</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tui-footer">
+            <div>
+              <span class="tui-key">c</span>connections
+              <span class="tui-key">s</span>ssh
+              <span class="tui-key">l</span>listeners
+              <span class="tui-key">g</span>git
+            </div>
+            <div>
+              <span class="tui-key">?</span>help
+              <span class="tui-key">q</span>quit
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interface Options -->
+      <div class="interfaces">
+        <div class="interface">
+          <h3>TUI</h3>
+          <p>Live dashboard in your terminal. Run <code style="color: var(--fg);">sill</code> and leave it in a tab. Keyboard shortcuts for everything.</p>
+        </div>
+        <div class="interface">
+          <h3>CLI</h3>
+          <p>Query commands for scripts and one-off checks. Pipe to jq, grep, whatever. <code style="color: var(--fg);">sill connections --json</code></p>
+        </div>
+        <div class="interface">
+          <h3>Menu Bar</h3>
+          <p>Optional status icon. Green means normal. Yellow means new activity. Red means something flagged.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLI COMMANDS -->
+    <section class="section">
+      <p class="section-label">Commands</p>
+      <div class="cli-preview">
+        <span class="prompt">$</span> <span class="cmd">sill</span>                        <span class="comment"># open TUI dashboard</span><br>
+        <span class="prompt">$</span> <span class="cmd">sill connections</span> <span class="flag">--last 1h</span>   <span class="comment"># recent connections</span><br>
+        <span class="prompt">$</span> <span class="cmd">sill ssh</span>                     <span class="comment"># active SSH sessions</span><br>
+        <span class="prompt">$</span> <span class="cmd">sill git</span>                     <span class="comment"># git push/pull/fetch activity</span><br>
+        <span class="prompt">$</span> <span class="cmd">sill listeners</span>              <span class="comment"># open ports</span><br>
+        <span class="prompt">$</span> <span class="cmd">sill baseline</span>               <span class="comment"># manage learned baseline</span><br>
+        <span class="prompt">$</span> <span class="cmd">sill export</span> <span class="flag">--json</span>          <span class="comment"># dump for analysis</span>
+      </div>
+    </section>
+
+    <!-- MENU BAR -->
+    <section class="section">
+      <p class="section-label">Stay aware</p>
+      <div class="menubar-demo">
+        <div class="menubar-mock">
+          <div class="menubar-icon">
+            <div class="menubar-dot green"></div>
+            <span>sill</span>
+          </div>
+          <div class="menubar-icon">
+            <div class="menubar-dot yellow"></div>
+            <span>sill</span>
+          </div>
+          <div class="menubar-icon">
+            <div class="menubar-dot red"></div>
+            <span>sill</span>
+          </div>
+        </div>
+        <p class="menubar-desc">
+          Optional menu bar icon. Glanceable status without opening a terminal. Click to see recent activity.
+        </p>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <p class="section-label">What it watches</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Outbound connections</h3>
+          <p>Every process that talks to the network. Domain, IP, port, timestamp. Know what's reaching out.</p>
+        </div>
+        <div class="feature-card">
+          <h3>SSH sessions</h3>
+          <p>Where you're connected, how long you've been there. Production access at a glance.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Git activity</h3>
+          <p>Pushes, pulls, fetches. Which repos, which remotes. Track what code is moving.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Listening ports</h3>
+          <p>What's exposed on your machine. New listeners get flagged. No surprises.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Baseline drift</h3>
+          <p>Learns what's normal. Flags what's new. First time you hit a domain? You'll know.</p>
+        </div>
+        <div class="feature-card">
+          <h3>All local</h3>
+          <p>SQLite on your machine. No cloud. No telemetry. Export when you want, to where you want.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="text-align: center; padding: 5rem 0;">
+      <h2 style="font-size: 2rem; font-weight: 300; margin-bottom: 1rem;">Want early access?</h2>
+      <p style="color: var(--muted); margin-bottom: 2rem; max-width: 400px; margin-left: auto; margin-right: auto;">We're building in public. Join the waitlist and we'll reach out when it's ready.</p>
+      <a href="mailto:hello@gloom.tools?subject=windowsill%20Waitlist&body=Hey%2C%20I%27d%20like%20to%20try%20windowsill%20when%20it%27s%20ready.%0A%0AName%3A%20%0AWhat%20I%27d%20use%20it%20for%3A%20" class="cta-button primary">
+        Join waitlist →
+      </a>
+    </section>
 
     <footer>
       <div class="footer-left">© 2026 Gloom</div>
