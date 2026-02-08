@@ -396,51 +396,217 @@
     }
 
     /* --- MENU BAR --- */
-    .menubar-demo {
+    .menubar-section {
       display: flex;
-      align-items: center;
-      gap: 2rem;
+      gap: 3rem;
+      align-items: flex-start;
       margin-top: 2rem;
     }
 
-    .menubar-mock {
-      background: #2d2d2d;
-      border-radius: 6px;
-      padding: 6px 12px;
+    .menubar-wrapper {
+      position: relative;
+    }
+
+    /* macOS Menu Bar */
+    .macos-menubar {
+      background: linear-gradient(180deg, #3a3a3c 0%, #2c2c2e 100%);
+      border-radius: 10px 10px 0 0;
+      padding: 0 12px;
+      height: 25px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      justify-content: flex-end;
+      gap: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
       font-size: 13px;
       color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      min-width: 320px;
     }
 
-    .menubar-icon {
+    .macos-menubar-item {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      opacity: 0.9;
     }
 
-    .menubar-dot {
+    .macos-menubar-item.active {
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin: -2px -8px;
+    }
+
+    .menubar-status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
     }
 
-    .menubar-dot.green { background: var(--green); }
-    .menubar-dot.yellow { background: var(--yellow); }
-    .menubar-dot.red { background: var(--red); }
+    .menubar-status-dot.yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
 
-    .menubar-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.6);
+    /* Dropdown */
+    .macos-dropdown {
+      background: rgba(40, 40, 45, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 0 0 10px 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+      font-size: 12px;
+      color: #fff;
+      min-width: 320px;
+      overflow: hidden;
     }
 
-    .menubar-desc {
+    .dropdown-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dropdown-title {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .dropdown-status {
+      font-size: 11px;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dropdown-section {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .dropdown-section:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-section-title {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.4);
+      padding: 0 14px 6px;
+    }
+
+    .dropdown-row {
+      padding: 6px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dropdown-row:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .dropdown-row-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dropdown-row-icon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .dropdown-row-icon.warning {
+      background: var(--yellow);
+    }
+
+    .dropdown-row-icon.new {
+      background: var(--blue);
+    }
+
+    .dropdown-row-text {
+      color: rgba(255,255,255,0.9);
+    }
+
+    .dropdown-row-meta {
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+    }
+
+    .dropdown-row.new .dropdown-row-text {
+      color: var(--yellow);
+    }
+
+    .dropdown-footer {
+      padding: 10px 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+
+    .dropdown-link {
+      color: var(--blue);
+      cursor: pointer;
+    }
+
+    .dropdown-link:hover {
+      text-decoration: underline;
+    }
+
+    .menubar-explanation {
+      flex: 1;
+      padding-top: 1rem;
+    }
+
+    .menubar-explanation h3 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .menubar-explanation p {
       font-size: 0.9rem;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.7;
+      margin-bottom: 1rem;
     }
+
+    .menubar-states {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .menubar-state {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .menubar-state .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .menubar-state .dot.green { background: var(--green); }
+    .menubar-state .dot.yellow { background: var(--yellow); }
+    .menubar-state .dot.red { background: var(--red); }
 
     /* --- FOOTER --- */
     footer {
@@ -744,24 +910,116 @@
     <!-- MENU BAR -->
     <section class="section">
       <p class="section-label">Stay aware</p>
-      <div class="menubar-demo">
-        <div class="menubar-mock">
-          <div class="menubar-icon">
-            <div class="menubar-dot green"></div>
-            <span>sill</span>
+      <p class="section-intro">
+        Don't want to keep a terminal open? The menu bar icon gives you at-a-glance status and quick access to recent activity.
+      </p>
+
+      <div class="menubar-section">
+        <div class="menubar-wrapper">
+          <!-- macOS Menu Bar -->
+          <div class="macos-menubar">
+            <div class="macos-menubar-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div class="macos-menubar-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div class="macos-menubar-item active">
+              <div class="menubar-status-dot yellow"></div>
+              <span style="font-size: 12px;">sill</span>
+            </div>
+            <div class="macos-menubar-item" style="opacity: 0.7;">
+              <span>Sat 8:42 PM</span>
+            </div>
           </div>
-          <div class="menubar-icon">
-            <div class="menubar-dot yellow"></div>
-            <span>sill</span>
-          </div>
-          <div class="menubar-icon">
-            <div class="menubar-dot red"></div>
-            <span>sill</span>
+
+          <!-- Dropdown -->
+          <div class="macos-dropdown">
+            <div class="dropdown-header">
+              <span class="dropdown-title">windowsill</span>
+              <span class="dropdown-status">
+                <span style="width: 6px; height: 6px; background: var(--yellow); border-radius: 50%;"></span>
+                2 new this session
+              </span>
+            </div>
+
+            <div class="dropdown-section">
+              <div class="dropdown-section-title">Recent Connections</div>
+              <div class="dropdown-row new">
+                <div class="dropdown-row-left">
+                  <div class="dropdown-row-icon warning"></div>
+                  <span class="dropdown-row-text">sketchy-domain.ru</span>
+                </div>
+                <span class="dropdown-row-meta">curl • 2m ago</span>
+              </div>
+              <div class="dropdown-row">
+                <div class="dropdown-row-left">
+                  <div class="dropdown-row-icon new"></div>
+                  <span class="dropdown-row-text">analytics.tiktok.com</span>
+                </div>
+                <span class="dropdown-row-meta">chrome • 14m ago</span>
+              </div>
+              <div class="dropdown-row">
+                <div class="dropdown-row-left">
+                  <div class="dropdown-row-icon"></div>
+                  <span class="dropdown-row-text">api.stripe.com</span>
+                </div>
+                <span class="dropdown-row-meta">node • 32m ago</span>
+              </div>
+            </div>
+
+            <div class="dropdown-section">
+              <div class="dropdown-section-title">SSH Sessions</div>
+              <div class="dropdown-row">
+                <div class="dropdown-row-left">
+                  <div class="dropdown-row-icon"></div>
+                  <span class="dropdown-row-text">prod-db-1.aws.internal</span>
+                </div>
+                <span class="dropdown-row-meta">14m</span>
+              </div>
+            </div>
+
+            <div class="dropdown-section">
+              <div class="dropdown-section-title">New Listeners</div>
+              <div class="dropdown-row new">
+                <div class="dropdown-row-left">
+                  <div class="dropdown-row-icon warning"></div>
+                  <span class="dropdown-row-text">:8080 — java</span>
+                </div>
+                <span class="dropdown-row-meta">since 3m ago</span>
+              </div>
+            </div>
+
+            <div class="dropdown-footer">
+              <span class="dropdown-link">Open sill</span>
+              <span style="color: rgba(255,255,255,0.3);">47 connections today</span>
+            </div>
           </div>
         </div>
-        <p class="menubar-desc">
-          Optional menu bar icon. Glanceable status without opening a terminal. Click to see recent activity.
-        </p>
+
+        <div class="menubar-explanation">
+          <h3>Glanceable Status</h3>
+          <p>
+            The menu bar icon changes color based on what's happening. Green when everything's normal. Yellow when there's new activity to review. Red when something looks suspicious.
+          </p>
+          <p>
+            Click to see a quick summary without opening a terminal. Recent connections, active SSH sessions, new listeners — all at a glance.
+          </p>
+          <div class="menubar-states">
+            <div class="menubar-state">
+              <div class="dot green"></div>
+              <span>All clear</span>
+            </div>
+            <div class="menubar-state">
+              <div class="dot yellow"></div>
+              <span>New activity</span>
+            </div>
+            <div class="menubar-state">
+              <div class="dot red"></div>
+              <span>Needs attention</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
